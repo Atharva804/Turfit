@@ -1,17 +1,55 @@
 const express = require("express");
-// const cors = require("cors");
-// const mongoose = require("mongoose");
-// const dotenv = require("dotenv");
-// const path = require("path");
+const cors = require("cors");
+const mongoose = require("mongoose");
+require("dotenv").config();
+const connectDB = require("./init/connect");
 const mainRouter = require("./routes/main");
+const turfRouter = require("./routes/turfs");
+const bookingRouter = require("./routes/bookings");
+const userSchema = require("./models/User");
+const turfSchema = require("./models/Turf");
+const bookingSchema = require("./models/Booking");
 
 const app = express();
 const PORT = 3000;
 
 // Middleware
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use("/", mainRouter);
+app.use("/home", mainRouter);
+app.use("/turf", turfRouter);
+app.use("/booking", bookingRouter);
+
+// Connect to MongoDB
+connectDB();
+
+// Inserting data (Initializing db)
+// app.get("/test", async (req, res) => {
+//   let newTurf = new turfSchema({
+//     name: "Test Turf 2",
+//     location: "Test Location 2",
+//     city: "Test City 2",
+//     sportType: "cricket",
+//     images: ["image1.jpg", "image2.jpg"],
+//     ownerId: "681b44865f89be2db10afba4",
+//     slots: [
+//       { date: "2023-10-01", time: "10:00 AM", isBooked: false },
+//       { date: "2023-10-01", time: "11:00 AM", isBooked: false },
+//     ],
+//     createdAt: new Date(),
+//   });
+
+//   await newTurf
+//     .save()
+//     .then((doc) => {
+//       console.log("Saved ", doc);
+//       res.send("success added turf");
+//     })
+//     .catch((err) => {
+//       console.error("Error aaya: ", err);
+//     });
+// });
 
 // Start the server
 app.listen(PORT, () => {
