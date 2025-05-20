@@ -1,0 +1,65 @@
+.turf-card {
+  /* width: 350px; */
+  /* height: 450px; */
+  background-color: #f6f6f6;
+  width: calc((100% - 2rem) / 3);
+}
+@media (max-width: 1024px) {
+  .turf-card {
+    width: calc((100% - 1rem) / 2);
+  }
+}
+@media (max-width: 640px) {
+  .turf-card {
+    width: 100%;
+  }
+}
+.turf-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+.turf-name {
+  font-size: 1.7rem;
+  font-weight: 600;
+}
+.turf-description {
+  font-size: 0.9rem;
+  font-weight: 400;
+}
+.loc-price {
+  font-size: 0.9rem;
+  font-weight: 300;
+}
+.loc-logo {
+  width: 30px;
+  height: 30px;
+}
+.horizontal-line {
+  height: 1px;
+  background-color: #bebebe;
+  align-self: center;
+}
+.book-btn,
+.details-btn {
+  background-color: #14ae5c;
+  color: white;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  border-radius: 8px;
+  border: solid 1px black;
+}
+.book-btn:hover {
+  background-color: #0f8b4d;
+}
+.details-btn {
+  background-color: #f0f0f0;
+  color: black;
+  border: solid 1px #bebebe;
+}
+.details-btn:hover {
+  background-color: #e0e0e0;
+}

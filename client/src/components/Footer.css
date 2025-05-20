@@ -1,0 +1,46 @@
+.footer {
+  height: 610px;
+  background-color: #0a1a38;
+  color: white;
+  bottom: 0;
+  width: 100%;
+  position: relative;
+}
+.light-text {
+  color: #bebebe;
+}
+.footer-heading {
+  font-weight: 600;
+  font-size: 2.25rem;
+}
+.long-para {
+  font-size: 1.3rem;
+  line-height: 1.75rem;
+  font-weight: 400;
+}
+.join-btn {
+  background-color: #14ae5c;
+  color: white;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  border-radius: 8px;
+  border: none;
+}
+.join-btn:hover {
+  background-color: #0f8b4d;
+}
+.horizontal-line {
+  height: 1px;
+  background-color: #bebebe;
+}
+.footer-sub-heading {
+  font-weight: 400;
+  font-size: 1.1rem;
+}
+.social-icon {
+  width: 30px;
+  height: 30px;
+}
