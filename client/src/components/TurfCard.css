@@ -1,12 +1,14 @@
 .turf-card {
-  /* width: 350px; */
+  width: 350px;
   /* height: 450px; */
   background-color: #f6f6f6;
-  width: calc((100% - 2rem) / 3);
+  /* width: calc((100% - 2rem) / 3); */
+  /* width: 342px; */
 }
 @media (max-width: 1024px) {
   .turf-card {
-    width: calc((100% - 1rem) / 2);
+    width: 350px;
+    /* width: calc((100vw - 1rem) / 3); */
   }
 }
 @media (max-width: 640px) {

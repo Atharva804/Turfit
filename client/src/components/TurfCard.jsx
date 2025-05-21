@@ -17,7 +17,7 @@ const TurfCard = ({ turf }) => {
         <p className="turf-description mt-2">{turf.description}</p>
         <div className="loc-price flex flex-row items-center mt-2">
           <img src={logo} className="loc-logo" />
-          <p className="turf-location flex-1/3 ml-2">{turf.location}</p>
+          <p className="turf-location flex-1/3 ml-2">{turf.address}</p>
           <p className="turf-price flex-1/3">Price: {turf.price} per hour</p>
         </div>
         <div className="horizontal-line w-11/12 mt-4"></div>

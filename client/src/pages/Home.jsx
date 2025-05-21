@@ -1,17 +1,31 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./Turfs.css";
 import "./Home.css";
 import back from "../assets/back.jpg";
 import down from "../assets/down.png";
 import { Link } from "react-router-dom";
 import TurfCard from "../components/TurfCard";
+import apiService from "../services/apiService";
 
 const Home = () => {
   const sectionRef = useRef(null);
+  const [turfs, setTurfs] = useState([]);
 
   const scrollToSection = () => {
     sectionRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
+  useEffect(() => {
+    const fetchTurfs = async () => {
+      try {
+        const response = await apiService.getTasks();
+        setTurfs(response.data);
+      } catch (error) {
+        console.error("Error fetching turfs:", error);
+      }
+    };
+    fetchTurfs();
+  }, [turfs]);
   return (
     <div className="home-container">
       <div className="home-banner w-full">
@@ -54,18 +68,8 @@ const Home = () => {
           </h2>
         </div>
         <div className="turfs-list w-fullrounded-2xl my-3 mx-20">
-          {[1, 2, 3].map((i) => (
-            <TurfCard
-              key={i}
-              turf={{
-                id: i,
-                name: `Turf ${i} Name`,
-                description:
-                  "Bada Bangarda Super Corridor Use Code RR2+1 to get 1 hour free on 2 hour booking",
-                location: "Bada Bangarda",
-                price: "500",
-              }}
-            />
+          {turfs.map((turf) => (
+            <TurfCard key={turf._id} turf={turf} />
           ))}
         </div>
         <div className="featured-browse-btn mb-8 mt-5 border-1 p-3 rounded-lg">

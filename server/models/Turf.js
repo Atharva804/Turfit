@@ -21,7 +21,11 @@ const turfSchema = new mongoose.Schema({
     required: true,
   },
 
-  location: {
+  address: {
+    type: String,
+    required: true,
+  },
+  description: {
     type: String,
     required: true,
   },

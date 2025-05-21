@@ -27,10 +27,12 @@ connectDB();
 // Inserting data (Initializing db)
 // app.get("/test", async (req, res) => {
 //   let newTurf = new turfSchema({
-//     name: "Test Turf 2",
-//     location: "Test Location 2",
-//     city: "Test City 2",
-//     sportType: "cricket",
+//     name: "Test Turf 3",
+//     address: "Test Location 3",
+//     description:
+//       "lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor",
+//     city: "Test City 3",
+//     sportType: "football",
 //     images: ["image1.jpg", "image2.jpg"],
 //     ownerId: "681b44865f89be2db10afba4",
 //     slots: [

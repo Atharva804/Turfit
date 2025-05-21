@@ -1,8 +1,22 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./Turfs.css";
 import TurfCard from "../components/TurfCard";
+import apiService from "../services/apiService";
 
 const Turfs = () => {
+  const [turfs, setTurfs] = useState([]);
+
+  useEffect(() => {
+    const fetchTurfs = async () => {
+      try {
+        const response = await apiService.getTasks();
+        setTurfs(response.data);
+      } catch (error) {
+        console.error("Error fetching turfs:", error);
+      }
+    };
+    fetchTurfs();
+  }, [turfs]);
   return (
     <div className="turf-container w-10/12 mx-auto flex flex-col items-center">
       <div className="search-container flex flex-row justify-between items-center mx-auto my-4 bg-gray-100 p-4 rounded-2xl shadow-md w-full">
@@ -23,18 +37,8 @@ const Turfs = () => {
         </div>
       </div>
       <div className="turfs-list w-fullrounded-2xl my-3">
-        {[1, 2, 3, 4, 5, 6].map((i) => (
-          <TurfCard
-            key={i}
-            turf={{
-              id: i,
-              name: `Turf ${i} Name`,
-              description:
-                "Bada Bangarda Super Corridor Use Code RR2+1 to get 1 hour free on 2 hour booking",
-              location: "Bada Bangarda",
-              price: "500",
-            }}
-          />
+        {turfs.map((i) => (
+          <TurfCard key={i._id} turf={i} />
         ))}
       </div>
       <div className="page-nav flex flex-row mt-3 mb-8">
