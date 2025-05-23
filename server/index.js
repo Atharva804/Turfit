@@ -6,20 +6,29 @@ const connectDB = require("./init/connect");
 const mainRouter = require("./routes/main");
 const turfRouter = require("./routes/turfs");
 const bookingRouter = require("./routes/bookings");
+const authRouter = require("./routes/auth");
 const userSchema = require("./models/User");
 const turfSchema = require("./models/Turf");
 const bookingSchema = require("./models/Booking");
+const cookieParser = require("cookie-parser");
 
 const app = express();
 const PORT = 3000;
 
 // Middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true, // allow credentials (cookies) in frontend requests
+  })
+);
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/home", mainRouter);
 app.use("/turf", turfRouter);
 app.use("/booking", bookingRouter);
+app.use("/auth", authRouter);
 
 // Connect to MongoDB
 connectDB();

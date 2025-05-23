@@ -8,15 +8,31 @@ import Register from "./pages/Register";
 // import Dashboard from "./pages/Dashboard";
 // import OwnerDashboard from "./pages/OwnerDashboard";
 import "./App.css";
+import { useState, useEffect } from "react";
+import axios from "./utils/axiosInstance";
 
 function App() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await axios.get("/auth/me");
+        setUser(res.data.user);
+      } catch (err) {
+        console.log("Not logged in or session expired");
+      }
+    };
+    fetchUser();
+  }, []);
+
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Layout />}>
+        <Route path="/" element={<Layout user={user} setUser={setUser} />}>
           <Route path="" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login setUser={setUser} />} />
+          <Route path="/register" element={<Register setUser={setUser} />} />
           <Route path="/turfs" element={<Turfs />} />
         </Route>
         {/* <Route path="/book/:id" element={<BookTurf />} /> */}

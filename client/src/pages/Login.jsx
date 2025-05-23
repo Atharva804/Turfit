@@ -1,19 +1,31 @@
 import React from "react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import backgroundImage from "../assets/back.jpg";
 import "./Login.css";
+import axios from "../utils/axiosInstance";
 
-function Login() {
+function Login({ setUser }) {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [staySigned, setStaySigned] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log("Email:", email);
-    console.log("Password:", password);
-    console.log("Stay Signed In:", staySigned);
+    try {
+      const res = await axios.post("/auth/login", {
+        email,
+        password,
+      });
+      const user = res.data.user;
+      // Save user data (not token)
+      setUser(user);
+      navigate("/"); // protected page
+    } catch (err) {
+      console.error(err.response.data);
+      alert("Login failed");
+    }
   };
 
   return (
@@ -21,7 +33,7 @@ function Login() {
       <img src={backgroundImage} alt="Image" className="background-img" />
       <div className="form-container">
         <h1>Login</h1>
-        <form onSubmit={handleSubmit} className="login-form">
+        <form onSubmit={handleLogin} className="login-form">
           <div className="input-box">
             <input
               className="input-field"

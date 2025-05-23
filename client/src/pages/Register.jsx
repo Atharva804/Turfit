@@ -2,18 +2,32 @@ import React from "react";
 import { useState } from "react";
 import backgroundImage from "../assets/back.jpg";
 import "./Login.css";
+import axios from "../utils/axiosInstance";
+import { useNavigate } from "react-router-dom";
 
-function Register() {
+function Register({ setUser }) {
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log("Full Name:", name);
-    console.log("Email:", email);
-    console.log("Password:", password);
+    try {
+      const res = await axios.post("/auth/register", {
+        name,
+        email,
+        password,
+        role: "user", // or "owner"
+      });
+      const user = res.data.user;
+      alert("Registration successful");
+      // setUser(user);
+      navigate("/login");
+    } catch (err) {
+      console.error(err.response.data);
+      alert("Register failed");
+    }
   };
 
   return (
@@ -21,7 +35,7 @@ function Register() {
       <img src={backgroundImage} alt="Image" className="background-img" />
       <div className="form-container">
         <h1>Sign Up</h1>
-        <form onSubmit={handleSubmit} className="register-form">
+        <form onSubmit={handleRegister} className="register-form">
           <div className="input-box">
             <input
               className="input-field"
