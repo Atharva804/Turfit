@@ -41,14 +41,14 @@ connectDB();
 //     description:
 //       "lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor",
 //     city: "Test City 3",
-//     sportType: "football",
+//     sportType: ["football", "cricket"],
+//     price: 500,
 //     images: ["image1.jpg", "image2.jpg"],
 //     ownerId: "681b44865f89be2db10afba4",
 //     slots: [
 //       { date: "2023-10-01", time: "10:00 AM", isBooked: false },
 //       { date: "2023-10-01", time: "11:00 AM", isBooked: false },
 //     ],
-//     createdAt: new Date(),
 //   });
 
 //   await newTurf

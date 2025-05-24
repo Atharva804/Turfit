@@ -2,10 +2,13 @@ import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import backgroundImage from "../assets/back.jpg";
+import { useDispatch } from "react-redux";
+import { setUser } from "../redux/authSlice";
 import "./Login.css";
 import axios from "../utils/axiosInstance";
 
-function Login({ setUser }) {
+function Login() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,9 +21,10 @@ function Login({ setUser }) {
         email,
         password,
       });
-      const user = res.data.user;
+      dispatch(setUser(res.data.user)); // Store in Redux
+      // const user = res.data.user;
       // Save user data (not token)
-      setUser(user);
+      // setUserOri(user);
       navigate("/"); // protected page
     } catch (err) {
       console.error(err.response.data);

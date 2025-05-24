@@ -3,10 +3,10 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import { Outlet } from "react-router";
 
-function Layout({ user, setUser }) {
+function Layout() {
   return (
     <>
-      <Navbar user={user} setUser={setUser} />
+      <Navbar />
       <Outlet />
       <Footer />
     </>

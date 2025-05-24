@@ -14,8 +14,8 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const turfId = req.params.id;
-    const turfs = await Turf.findById(turfId);
-    res.json({ data: turfs });
+    const turf = await Turf.findById(turfId);
+    res.json({ data: turf });
   } catch (error) {
     res.status(500).json({ message: "No turf found" });
   }

@@ -22,10 +22,10 @@ const TurfCard = ({ turf }) => {
         </div>
         <div className="horizontal-line w-11/12 mt-4"></div>
         <div className="buttons flex flex-row justify-between mt-4 mb-1">
-          <Link to={`/book/${turf.id}`}>
+          <Link to={`/book/${turf._id}`}>
             <button className="book-btn">Book</button>
           </Link>
-          <Link to={`/turf/${turf.id}`}>
+          <Link to={`/turf/${turf._id}`}>
             <button className="details-btn">View Details</button>
           </Link>
         </div>

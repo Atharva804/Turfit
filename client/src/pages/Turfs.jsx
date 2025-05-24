@@ -9,14 +9,14 @@ const Turfs = () => {
   useEffect(() => {
     const fetchTurfs = async () => {
       try {
-        const response = await apiService.getTasks();
+        const response = await apiService.getTurfs();
         setTurfs(response.data);
       } catch (error) {
         console.error("Error fetching turfs:", error);
       }
     };
     fetchTurfs();
-  }, [turfs]);
+  }, []);
   return (
     <div className="turf-container w-10/12 mx-auto flex flex-col items-center">
       <div className="search-container flex flex-row justify-between items-center mx-auto my-4 bg-gray-100 p-4 rounded-2xl shadow-md w-full">

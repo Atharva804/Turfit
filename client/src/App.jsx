@@ -5,40 +5,52 @@ import Turfs from "./pages/Turfs";
 // import BookTurf from "./pages/BookTurf";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import TurfDetails from "./pages/TurfDetails";
 // import Dashboard from "./pages/Dashboard";
-// import OwnerDashboard from "./pages/OwnerDashboard";
+import OwnerDashboard from "./pages/OwnerDashboard";
 import "./App.css";
-import { useState, useEffect } from "react";
-import axios from "./utils/axiosInstance";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { setUser, logoutUser } from "./redux/authSlice";
+import { fetchCurrentUser } from "./services/authService";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
-  const [user, setUser] = useState(null);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await axios.get("/auth/me");
-        setUser(res.data.user);
-      } catch (err) {
-        console.log("Not logged in or session expired");
+    const checkAuth = async () => {
+      const user = await fetchCurrentUser();
+      if (user) {
+        dispatch(setUser(user));
+      } else {
+        dispatch(logoutUser());
       }
     };
-    fetchUser();
+    checkAuth();
   }, []);
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Layout user={user} setUser={setUser} />}>
+        <Route path="/" element={<Layout />}>
           <Route path="" element={<Home />} />
-          <Route path="/login" element={<Login setUser={setUser} />} />
-          <Route path="/register" element={<Register setUser={setUser} />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/turfs" element={<Turfs />} />
+          <Route path="/turf/:id" element={<TurfDetails />} />
+          <Route
+            path="/owner-dashboard"
+            element={
+              <ProtectedRoute allowedRoles={["owner"]}>
+                <OwnerDashboard />
+              </ProtectedRoute>
+            }
+          />
         </Route>
         {/* <Route path="/book/:id" element={<BookTurf />} /> */}
         {/* <Route path="/login" element={<Login />} /> */}
         {/* <Route path="/dashboard" element={<Dashboard />} /> */}
-        {/* <Route path="/owner" element={<OwnerDashboard />} /> */}
       </Routes>
     </BrowserRouter>
   );

@@ -5,7 +5,7 @@ import "./Login.css";
 import axios from "../utils/axiosInstance";
 import { useNavigate } from "react-router-dom";
 
-function Register({ setUser }) {
+function Register() {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -20,9 +20,7 @@ function Register({ setUser }) {
         password,
         role: "user", // or "owner"
       });
-      const user = res.data.user;
       alert("Registration successful");
-      // setUser(user);
       navigate("/login");
     } catch (err) {
       console.error(err.response.data);

@@ -3,12 +3,20 @@ import axios from "axios";
 const apiUrl = "http://localhost:3000/";
 
 const apiService = {
-  async getTasks() {
+  async getTurfs() {
     try {
       const response = await axios.get(`${apiUrl}turf`);
       return response.data;
     } catch (error) {
-      throw new Error("Failed to fetch tasks");
+      throw new Error("Failed to fetch turfs");
+    }
+  },
+  async getOneTurf(id) {
+    try {
+      const response = await axios.get(`${apiUrl}turf/${id}`);
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to fetch turf");
     }
   },
 

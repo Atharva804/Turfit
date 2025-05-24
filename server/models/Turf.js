@@ -15,50 +15,52 @@ const slotSchema = new mongoose.Schema({
   },
 });
 
-const turfSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-
-  address: {
-    type: String,
-    required: true,
-  },
-  description: {
-    type: String,
-    required: true,
-  },
-
-  city: {
-    type: String,
-    required: true,
-  },
-
-  sportType: {
-    type: String,
-    enum: ["football", "cricket", "tennis", "badminton", "basketball"],
-    required: true,
-  },
-
-  images: [
-    {
-      type: String, // URL or local path
+const turfSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
     },
-  ],
 
-  ownerId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
+    address: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+
+    city: {
+      type: String,
+      required: true,
+    },
+
+    sportType: {
+      type: Array,
+      // enum: ["football", "cricket", "tennis", "badminton", "basketball"],
+      required: true,
+    },
+    price: {
+      type: Number,
+      required: true,
+    },
+
+    images: [
+      {
+        type: String, // URL or local path
+      },
+    ],
+
+    ownerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+
+    slots: [slotSchema],
   },
-
-  slots: [slotSchema],
-
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  { timestamps: true }
+);
 
 module.exports = mongoose.model("Turf", turfSchema);

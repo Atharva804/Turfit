@@ -2,14 +2,18 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/react.svg";
 import axios from "../utils/axiosInstance";
+import { useSelector, useDispatch } from "react-redux";
+import { logoutUser } from "../redux/authSlice";
 import "./Navbar.css";
 
-const Navbar = ({ user, setUser }) => {
+const Navbar = () => {
+  const user = useSelector((state) => state.auth.user);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleLogout = async () => {
     try {
       await axios.post("/auth/logout"); // Clears the HttpOnly cookie
-      setUser(null);
+      dispatch(logoutUser());
       navigate("/");
     } catch (err) {
       console.error("Logout failed", err);
@@ -47,9 +51,16 @@ const Navbar = ({ user, setUser }) => {
       <div className="navbar-btns">
         {user ? (
           <>
-            <Link to="/dashboard" className="signup-btn nav-btn">
-              Profile
-            </Link>
+            {" "}
+            {user.role === "owner" ? (
+              <Link to="/owner-dashboard" className="signup-btn nav-btn">
+                Profile
+              </Link>
+            ) : (
+              <Link to="/dashboard" className="signup-btn nav-btn">
+                Profile
+              </Link>
+            )}
             <button onClick={handleLogout} className="login-btn nav-btn">
               Logout
             </button>
