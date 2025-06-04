@@ -5,20 +5,22 @@ import "./Login.css";
 import axios from "../utils/axiosInstance";
 import { useNavigate } from "react-router-dom";
 
-function Register() {
+function RegisterOwner() {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
 
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("/auth/register", {
+      const res = await axios.post("/auth/register-owner", {
         name,
         email,
+        phone,
         password,
-        role: "user", // or "owner"
+        role: "owner",
       });
       alert("Registration successful");
       navigate("/login");
@@ -57,6 +59,16 @@ function Register() {
           <div className="input-box">
             <input
               className="input-field"
+              type="text"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="PHONE NUMBER"
+              required
+            />
+          </div>
+          <div className="input-box">
+            <input
+              className="input-field"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -74,10 +86,13 @@ function Register() {
             <p>
               <a href="/login">Already Have an Account?</a>
             </p>
+            <p>
+              <a href="/register">User?</a>
+            </p>
           </div>
         </form>
       </div>
     </div>
   );
 }
-export default Register;
+export default RegisterOwner;

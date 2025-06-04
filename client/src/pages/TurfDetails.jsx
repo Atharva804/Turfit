@@ -11,11 +11,17 @@ import {
 import { useParams } from "react-router-dom";
 import apiService from "../services/apiService";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 export default function TurfDetails() {
+  const navigate = useNavigate();
   const [turf, setTurf] = useState(null);
   const [turfImages, setTurfImages] = useState([]);
   const [sportType, setSportType] = useState([]);
   const { id } = useParams();
+
+  const handleBooking = () => {
+    navigate(`/book/${id}`);
+  };
 
   useEffect(() => {
     const fetchTurf = async () => {
@@ -162,7 +168,10 @@ export default function TurfDetails() {
                   Available Now
                 </span>
               </div>
-              <button className="w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-md font-medium">
+              <button
+                onClick={handleBooking}
+                className="w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-md font-medium"
+              >
                 Book Now
               </button>
             </div>

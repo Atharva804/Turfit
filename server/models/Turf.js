@@ -1,17 +1,21 @@
 const mongoose = require("mongoose");
 
 const slotSchema = new mongoose.Schema({
-  date: {
-    type: String, // "YYYY-MM-DD"
+  day: {
+    type: String,
     required: true,
   },
-  time: {
+  startTime: {
     type: String, // "10:00 AM"
     required: true,
   },
-  isBooked: {
+  endTime: {
+    type: String, // "10:00 AM"
+    required: true,
+  },
+  isAvailable: {
     type: Boolean,
-    default: false,
+    default: true,
   },
 });
 
@@ -59,6 +63,10 @@ const turfSchema = new mongoose.Schema(
     },
 
     slots: [slotSchema],
+    isAvailable: {
+      type: Boolean,
+      default: true,
+    },
   },
   { timestamps: true }
 );
