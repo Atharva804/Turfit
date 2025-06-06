@@ -1,7 +1,9 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import { OAuth2Client } from "google-auth-library";
 
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const JWT_SECRET = process.env.JWT_SECRET;
 
 // Register
@@ -144,5 +146,59 @@ export const getMe = async (req, res) => {
     res.json({ user });
   } catch (err) {
     res.status(401).json({ msg: "Invalid token" });
+  }
+};
+
+export const googleLogin = async (req, res) => {
+  const { idToken, role } = req.body;
+
+  if (!idToken) {
+    return res.status(400).json({ msg: "No ID token provided" });
+  }
+
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+    const { email, name } = payload;
+
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      user = await User.create({
+        name,
+        email,
+        password: "google-oauth-default", // Google user doesn't need this but schema requires
+        role: role.role,
+        googleId: payload.sub,
+      });
+    }
+
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    res
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "Lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      })
+      .json({
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        },
+      });
+  } catch (err) {
+    res.status(400).json({ msg: "Invalid Google login", error: err.message });
   }
 };

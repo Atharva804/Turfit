@@ -4,6 +4,7 @@ import backgroundImage from "../assets/back.jpg";
 import "./Login.css";
 import axios from "../utils/axiosInstance";
 import { useNavigate } from "react-router-dom";
+import GoogleLoginBtn from "../components/GoogleLoginBtn";
 
 function RegisterOwner() {
   const navigate = useNavigate();
@@ -82,6 +83,9 @@ function RegisterOwner() {
           >
             Sign Up
           </button>
+          <div className="google-btn mt-3">
+            <GoogleLoginBtn role="owner" />
+          </div>
           <div className="extra-feature flex flex-row items-center mt-5 w-12/12">
             <p>
               <a href="/login">Already Have an Account?</a>
