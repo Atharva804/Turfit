@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { bookingService } from "../services/bookingService";
 import back from "../assets/back.jpg";
 import apiService from "../services/apiService";
 
@@ -60,10 +61,14 @@ export default function TurfBooking() {
   // };
 
   const [bookingData, setBookingData] = useState({
+    userId: user._id,
+    turfId: "",
     date: "",
     startTime: "",
     endTime: "",
     duration: 1,
+    status: "",
+    paymentStatus: "",
     totalPrice: turfData.price,
     sport: "",
     specialRequests: "",
@@ -165,14 +170,36 @@ export default function TurfBooking() {
       setErrors(validationErrors);
       return;
     }
-    setBookingStep("confirmation");
+
+    const validatedBooking = bookingService
+      .validateBooking(turfData._id, bookingData)
+      .then((response) => {
+        if (!response) {
+          setErrors({
+            startTime: "This slot is not available, please change time",
+          });
+          return;
+        }
+        setBookingStep("confirmation");
+      })
+      .catch((error) => {
+        console.error("Error validating booking:", error);
+      });
   };
 
   const handleConfirmBooking = () => {
     setIsSubmitting(true);
+    bookingData.status = "booked";
+    bookingData.paymentStatus = "paid";
+    bookingData.turfId = turfData._id;
     // Simulate API call
     setTimeout(() => {
       setIsSubmitting(false);
+      const createBooking = bookingService.createBooking(bookingData);
+      if (!createBooking) {
+        setErrors({ date: "This turf is not available for booking" });
+        return;
+      }
       setBookingStep("success");
     }, 1000);
   };
