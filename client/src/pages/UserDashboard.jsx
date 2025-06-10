@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import back from "../assets/back.jpg";
@@ -18,72 +18,91 @@ import {
   MessageSquare,
   CreditCard,
 } from "lucide-react";
+import { bookingService } from "../services/bookingService";
 
 export default function UserDashboard() {
   const user = useSelector((state) => state.auth.user);
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("home");
+  const [bookings, setBookings] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  useEffect(() => {
+    const fetchBookings = async () => {
+      try {
+        const response = await bookingService.getOwnerBookings(
+          user._id,
+          "user"
+        );
+        if (response != null) {
+          setBookings(response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching bookings:", error);
+      }
+    };
+    fetchBookings();
+  }, [user, activeTab, bookings]);
+
   // Sample booking data
-  const bookings = [
-    {
-      id: 1,
-      turfName: "RR Sports Turf",
-      location: "Sector 18, Noida",
-      date: "2024-01-15",
-      time: "18:00 - 20:00",
-      duration: "2 hours",
-      price: "₹1,600",
-      status: "Completed",
-      image: "/images/back.jpg",
-      sport: "Football",
-      rating: 5,
-      hasReviewed: true,
-    },
-    {
-      id: 2,
-      turfName: "Green Valley Football Ground",
-      location: "Sector 22, Gurgaon",
-      date: "2024-01-20",
-      time: "16:00 - 18:00",
-      duration: "2 hours",
-      price: "₹2,400",
-      status: "Upcoming",
-      image: "/images/turf.png",
-      sport: "Football",
-      rating: null,
-      hasReviewed: false,
-    },
-    {
-      id: 3,
-      turfName: "Champions Cricket Academy",
-      location: "Dwarka, New Delhi",
-      date: "2024-01-10",
-      time: "14:00 - 16:00",
-      duration: "2 hours",
-      price: "₹1,900",
-      status: "Completed",
-      image: "/placeholder.svg?height=200&width=300",
-      sport: "Cricket",
-      rating: 4,
-      hasReviewed: true,
-    },
-    {
-      id: 4,
-      turfName: "Elite Sports Complex",
-      location: "Sector 15, Faridabad",
-      date: "2024-01-25",
-      time: "19:00 - 21:00",
-      duration: "2 hours",
-      price: "₹1,400",
-      status: "Cancelled",
-      image: "/placeholder.svg?height=200&width=300",
-      sport: "Basketball",
-      rating: null,
-      hasReviewed: false,
-    },
-  ];
+  // const bookings = [
+  //   {
+  //     id: 1,
+  //     turfName: "RR Sports Turf",
+  //     location: "Sector 18, Noida",
+  //     date: "2024-01-15",
+  //     time: "18:00 - 20:00",
+  //     duration: "2 hours",
+  //     price: "₹1,600",
+  //     status: "Completed",
+  //     image: "/images/back.jpg",
+  //     sport: "Football",
+  //     rating: 5,
+  //     hasReviewed: true,
+  //   },
+  //   {
+  //     id: 2,
+  //     turfName: "Green Valley Football Ground",
+  //     location: "Sector 22, Gurgaon",
+  //     date: "2024-01-20",
+  //     time: "16:00 - 18:00",
+  //     duration: "2 hours",
+  //     price: "₹2,400",
+  //     status: "Upcoming",
+  //     image: "/images/turf.png",
+  //     sport: "Football",
+  //     rating: null,
+  //     hasReviewed: false,
+  //   },
+  //   {
+  //     id: 3,
+  //     turfName: "Champions Cricket Academy",
+  //     location: "Dwarka, New Delhi",
+  //     date: "2024-01-10",
+  //     time: "14:00 - 16:00",
+  //     duration: "2 hours",
+  //     price: "₹1,900",
+  //     status: "Completed",
+  //     image: "/placeholder.svg?height=200&width=300",
+  //     sport: "Cricket",
+  //     rating: 4,
+  //     hasReviewed: true,
+  //   },
+  //   {
+  //     id: 4,
+  //     turfName: "Elite Sports Complex",
+  //     location: "Sector 15, Faridabad",
+  //     date: "2024-01-25",
+  //     time: "19:00 - 21:00",
+  //     duration: "2 hours",
+  //     price: "₹1,400",
+  //     status: "Cancelled",
+  //     image: "/placeholder.svg?height=200&width=300",
+  //     sport: "Basketball",
+  //     rating: null,
+  //     hasReviewed: false,
+  //   },
+  // ];
 
   // Sample reviews data
   const userReviews = [
@@ -111,16 +130,16 @@ export default function UserDashboard() {
     { id: "home", label: "Home", icon: Home },
     { id: "account", label: "Account Details", icon: User },
     { id: "bookings", label: "Booking History", icon: Calendar },
-    { id: "reviews", label: "My Reviews", icon: MessageSquare },
+    // { id: "reviews", label: "My Reviews", icon: MessageSquare },
   ];
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "Completed":
+      case "completed":
         return "bg-green-100 text-green-800";
-      case "Upcoming":
+      case "booked":
         return "bg-blue-100 text-blue-800";
-      case "Cancelled":
+      case "cancelled":
         return "bg-red-100 text-red-800";
       default:
         return "bg-gray-100 text-gray-800";
@@ -256,7 +275,7 @@ export default function UserDashboard() {
               <div className="space-y-4">
                 {bookings.slice(0, 3).map((booking) => (
                   <div
-                    key={booking.id}
+                    key={booking._id}
                     className="flex items-center p-4 border rounded-lg hover:bg-gray-50"
                   >
                     <img
@@ -284,10 +303,10 @@ export default function UserDashboard() {
                       <div className="flex items-center text-gray-600 text-sm">
                         <Clock className="w-4 h-4 mr-1" />
                         <span>
-                          {booking.date} • {booking.time}
+                          {booking.date} • {booking.fullTime}
                         </span>
                         <span className="ml-4 font-semibold text-gray-900">
-                          {booking.price}
+                          ₹{booking.price}
                         </span>
                       </div>
                     </div>
@@ -297,7 +316,7 @@ export default function UserDashboard() {
             </div>
 
             {/* Recent Reviews */}
-            <div className="bg-white rounded-lg shadow-sm border p-6">
+            {/* <div className="bg-white rounded-lg shadow-sm border p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold text-gray-900">
                   Recent Reviews
@@ -346,7 +365,7 @@ export default function UserDashboard() {
                   </div>
                 ))}
               </div>
-            </div>
+            </div> */}
           </div>
         );
 
@@ -437,7 +456,7 @@ export default function UserDashboard() {
             <div className="space-y-6">
               {bookings.map((booking) => (
                 <div
-                  key={booking.id}
+                  key={booking._id}
                   className="bg-white rounded-lg shadow-sm border p-6"
                 >
                   <div className="flex flex-col md:flex-row">
@@ -459,16 +478,16 @@ export default function UserDashboard() {
                           <div className="flex items-center text-gray-600 mb-2">
                             <Clock className="w-4 h-4 mr-1" />
                             <span>
-                              {booking.date} • {booking.time} •{" "}
-                              {booking.duration}
+                              {booking.date} • {booking.fullTime} •{" "}
+                              {booking.duration} hours
                             </span>
                           </div>
                           <div className="flex items-center">
                             <span className="text-sm bg-gray-100 text-gray-700 px-2 py-1 rounded mr-2">
-                              {booking.sport}
+                              {booking.sportType}
                             </span>
                             <span className="text-lg font-bold text-green-600">
-                              {booking.price}
+                              ₹{booking.price}
                             </span>
                           </div>
                         </div>
@@ -523,7 +542,7 @@ export default function UserDashboard() {
           </div>
         );
 
-      case "reviews":
+        // case "reviews":
         return (
           <div>
             <h1 className="text-3xl font-bold text-gray-900 mb-8">
@@ -676,7 +695,7 @@ export default function UserDashboard() {
                 </div>
                 <div className="ml-3">
                   <p className="text-sm font-medium text-gray-900">
-                    Rahul Sharma
+                    {user.name}
                   </p>
                   <p className="text-xs text-gray-600">Player</p>
                 </div>

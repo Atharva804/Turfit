@@ -172,7 +172,7 @@ export const googleLogin = async (req, res) => {
         name,
         email,
         password: "google-oauth-default", // Google user doesn't need this but schema requires
-        role: role.role,
+        role: role,
         googleId: payload.sub,
       });
     }

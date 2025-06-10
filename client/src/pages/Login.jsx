@@ -22,7 +22,6 @@ function Login() {
         email,
         password,
       });
-      console.log("Login response:", res.data);
       dispatch(setUser(res.data.user)); // Store in Redux
       // const user = res.data.user;
       // Save user data (not token)
@@ -79,7 +78,7 @@ function Login() {
             Login
           </button>
           <div className="google-btn mt-3">
-            <GoogleLoginBtn />
+            <GoogleLoginBtn role="user" />
           </div>
           <div className="extra-feature flex flex-row items-center mt-5 w-12/12">
             <p>

@@ -62,7 +62,11 @@ export default function TurfBooking() {
 
   const [bookingData, setBookingData] = useState({
     userId: user._id,
+    userName: user.name,
+    ownerId: "",
     turfId: "",
+    turfName: "",
+    location: "",
     date: "",
     startTime: "",
     endTime: "",
@@ -192,6 +196,9 @@ export default function TurfBooking() {
     bookingData.status = "booked";
     bookingData.paymentStatus = "paid";
     bookingData.turfId = turfData._id;
+    bookingData.turfName = turfData.name;
+    bookingData.location = turfData.address;
+    bookingData.ownerId = turfData.ownerId;
     // Simulate API call
     setTimeout(() => {
       setIsSubmitting(false);

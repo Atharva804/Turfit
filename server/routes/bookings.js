@@ -2,16 +2,27 @@ const express = require("express");
 const Booking = require("../models/Booking");
 const router = express.Router();
 
-router.get("/", async (req, res) => {
+router.get("/:id", async (req, res) => {
+  const id = req.params.id;
   try {
-    const bookings = await Booking.find().exec();
+    const bookings = await Booking.find({ ownerId: id }).exec();
     res.json({ data: bookings });
   } catch (error) {
     res.status(500).json({ message: "No turf found" });
   }
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/user/:id", async (req, res) => {
+  const id = req.params.id;
+  try {
+    const bookings = await Booking.find({ userId: id }).exec();
+    res.json({ data: bookings });
+  } catch (error) {
+    res.status(500).json({ message: "No turf found" });
+  }
+});
+
+router.get("/validate/:id", async (req, res) => {
   const turfId = req.params.id;
   const { date, time } = req.query;
 
@@ -34,12 +45,21 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+// post request to add a new booking
 router.post("/", async (req, res) => {
   let newBooking = new Booking({
     userId: req.body.userId,
+    userName: req.body.userName,
+    ownerId: req.body.ownerId,
     turfId: req.body.turfId,
+    turfName: req.body.turfName,
+    location: req.body.location,
     date: req.body.date,
     time: req.body.startTime,
+    fullTime: req.body.startTime + " - " + req.body.endTime,
+    duration: req.body.duration,
+    price: req.body.totalPrice,
+    sportType: req.body.sport,
     status: req.body.status || "booked",
     paymentStatus: req.body.paymentStatus || "paid",
   });
@@ -54,6 +74,22 @@ router.post("/", async (req, res) => {
     });
 });
 
-// post request to add a new booking
+router.put("/complete", async (req, res) => {
+  const { turfId, ownerId } = req.body;
+
+  try {
+    const booking = await Booking.findOneAndUpdate(
+      { turfId: turfId, ownerId: ownerId, status: "booked" },
+      { status: "completed" },
+      { new: true }
+    );
+    return res.json({ message: "Booking completed successfully" });
+  } catch (error) {
+    console.error("Error completing booking:", error);
+    return res
+      .status(500)
+      .json({ message: "An error occurred while completing the booking" });
+  }
+});
 
 module.exports = router;

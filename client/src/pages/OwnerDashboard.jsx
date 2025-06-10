@@ -16,40 +16,80 @@ import {
   Edit,
   Trash2,
   Plus,
+  Eye,
+  Clock,
   MapPin,
   Menu,
   X,
   BarChart3,
   Settings,
 } from "lucide-react";
+import { bookingService } from "../services/bookingService";
 
 export default function OwnerDashboard() {
   const user = useSelector((state) => state.auth.user);
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("home");
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  // Sample turf data
+  const [bookings, setBookings] = useState([]);
   const [turfs, setTurfs] = useState([]);
+
   useEffect(() => {
-    const fetchTurfs = async () => {
-      try {
-        const response = await apiService.getOwnerTurfs(user._id);
-        setTurfs(response.data);
-      } catch (error) {
-        console.error("Error fetching turfs:", error);
-      }
-    };
-    fetchTurfs();
-  }, [user]);
+    if (activeTab === "home") {
+      const fetchTurfs = async () => {
+        try {
+          const response = await apiService.getOwnerTurfs(user._id);
+          setTurfs(response.data);
+        } catch (error) {
+          console.error("Error fetching turfs:", error);
+        }
+      };
+      fetchTurfs();
+    } else if (activeTab === "bookings") {
+      const fetchBookings = async () => {
+        try {
+          const response = await bookingService.getOwnerBookings(
+            user._id,
+            "owner"
+          );
+          setBookings(response.data);
+        } catch (error) {
+          console.error("Error fetching bookings:", error);
+        }
+      };
+      fetchBookings();
+    }
+  }, [user, activeTab, bookings]);
 
   const navigationItems = [
     { id: "home", label: "Home", icon: Home },
     { id: "account", label: "Account Details", icon: User },
     { id: "revenue", label: "View Revenue", icon: DollarSign },
-    { id: "analytics", label: "Analytics", icon: BarChart3 },
+    { id: "bookings", label: "View Bookings", icon: BarChart3 },
     { id: "settings", label: "Settings", icon: Settings },
   ];
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "completed":
+        return "bg-green-100 text-green-800";
+      case "booked":
+        return "bg-blue-100 text-blue-800";
+      case "cancelled":
+        return "bg-red-100 text-red-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  const handleCompleteBooking = (turfId, ownerId) => {
+    const completedBooking = bookingService.completeBooking(turfId, ownerId);
+    if (completedBooking) {
+      alert("Booking completed successfully!");
+    } else {
+      alert("Failed to complete booking. Please try again.");
+    }
+  };
 
   const handleEdit = (turfId) => {
     // console.log("Edit turf:", turfId);
@@ -377,6 +417,91 @@ export default function OwnerDashboard() {
             </div>
           </div>
         );
+      case "bookings":
+        return (
+          <div>
+            <div className="flex items-center justify-between mb-8">
+              <h1 className="text-3xl font-bold text-gray-900">
+                Booking History
+              </h1>
+            </div>
+
+            <div className="space-y-6">
+              {bookings.map((booking) => (
+                <div
+                  key={booking._id}
+                  className="bg-white rounded-lg shadow-sm border p-6"
+                >
+                  <div className="flex flex-col md:flex-row">
+                    <img
+                      src={back}
+                      alt={booking.turfName}
+                      className="w-full md:w-48 h-32 rounded-lg object-cover mb-4 md:mb-0 md:mr-6"
+                    />
+                    <div className="flex-1">
+                      <div className="flex items-start justify-between mb-4">
+                        <div>
+                          <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                            {booking.turfName}
+                          </h3>
+                          <div className="flex items-center text-gray-600 mb-2">
+                            <MapPin className="w-4 h-4 mr-1" />
+                            <span>{booking.location}</span>
+                          </div>
+                          <div className="flex items-center text-gray-600 mb-2">
+                            <Clock className="w-4 h-4 mr-1" />
+                            <span>
+                              {booking.date} • {booking.fullTime} •{" "}
+                              {booking.duration} {"hours"}
+                            </span>
+                          </div>
+                          <div className="flex items-center">
+                            <span className="text-sm bg-gray-100 text-gray-700 px-2 py-1 rounded mr-2">
+                              {booking.sportType}
+                            </span>
+                            <span className="text-lg font-bold text-green-600">
+                              ₹{booking.price}
+                            </span>
+                          </div>
+                        </div>
+                        <span
+                          className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
+                            booking.status
+                          )}`}
+                        >
+                          {booking.status == "booked"
+                            ? "upcoming"
+                            : booking.status}
+                        </span>
+                      </div>
+
+                      <div className="flex flex-wrap gap-2">
+                        {booking.status === "booked" && (
+                          <button className="px-4 py-2 border border-red-500 text-red-600 rounded-md hover:bg-red-50 transition-colors">
+                            Cancel Booking
+                          </button>
+                        )}
+                        {booking.status === "booked" && (
+                          <button
+                            onClick={() =>
+                              handleCompleteBooking(
+                                booking.turfId,
+                                booking.ownerId
+                              )
+                            }
+                            className="px-4 py-2 border border-green-500 text-green-600 rounded-md hover:bg-green-50 transition-colors"
+                          >
+                            Complete Booking
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
 
       default:
         return (
@@ -456,7 +581,7 @@ export default function OwnerDashboard() {
                 </div>
                 <div className="ml-3">
                   <p className="text-sm font-medium text-gray-900">
-                    Rajesh Kumar
+                    {user.name}
                   </p>
                   <p className="text-xs text-gray-600">Owner</p>
                 </div>
