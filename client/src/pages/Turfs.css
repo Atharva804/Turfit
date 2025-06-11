@@ -3,7 +3,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 1rem; /* space between items */
-  justify-content: flex-start; /* aligns items to the left edge */
+  justify-content: center; /* aligns items to the left edge */
 }
 .search-btn {
   background-color: #14ae5c;

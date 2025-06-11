@@ -650,7 +650,7 @@ export default function TurfBooking() {
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Edit
         </button>
-        <div className="space-x-4">
+        <div className="space-x-4 flex">
           <button
             onClick={() => window.history.back()}
             className="px-6 py-3 border border-gray-300 rounded-md text-gray-700 font-medium hover:bg-gray-50"

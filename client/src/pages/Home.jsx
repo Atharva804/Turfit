@@ -68,7 +68,7 @@ const Home = () => {
           </h2>
         </div>
         <div className="turfs-list w-fullrounded-2xl my-3 mx-20">
-          {turfs.map((turf) => (
+          {turfs.slice(0, 3).map((turf) => (
             <TurfCard key={turf._id} turf={turf} />
           ))}
         </div>

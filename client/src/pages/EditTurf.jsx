@@ -65,6 +65,7 @@ export default function EditTurf() {
 
   const handleCancel = () => {
     navigate("/owner-dashboard");
+    window.scrollTo(0, 0);
   };
 
   const handleChange = (e) => {
@@ -590,6 +591,7 @@ export default function EditTurf() {
           <div className="flex justify-end space-x-4">
             <button
               type="button"
+              onClick={handleCancel}
               className="px-6 py-3 border border-gray-300 rounded-md text-gray-700 font-medium hover:bg-gray-50"
             >
               Cancel

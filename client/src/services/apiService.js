@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const apiUrl = "http://localhost:3000/";
+const apiUrl = import.meta.env.VITE_BACKEND_URL;
 
 const apiService = {
   async getTurfs() {
@@ -51,13 +51,13 @@ const apiService = {
     }
   },
 
-  // async deleteTask(id) {
-  //     try {
-  //     await axios.delete(`${apiUrl}tasks/${id}`);
-  //     } catch (error) {
-  //     throw new Error("Failed to delete task");
-  //     }
-  // },
+  async deleteTurf(id) {
+    try {
+      await axios.delete(`${apiUrl}turf/${id}`);
+    } catch (error) {
+      throw new Error("Failed to delete task");
+    }
+  },
 };
 
 export default apiService;

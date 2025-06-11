@@ -31,9 +31,7 @@ router.get("/owner/:id", async (req, res) => {
   }
 
   try {
-    const turfs = await Turf.find({ ownerId: ownerId })
-      .populate("ownerId", "name email")
-      .exec();
+    const turfs = await Turf.find({ ownerId: ownerId }).exec();
 
     if (!turfs || turfs.length === 0) {
       return res.status(404).json({ data: "No turfs found for this owner" });
@@ -75,6 +73,7 @@ router.post("/", async (req, res) => {
   // res.json({ message: "Turf added successfully" });
 });
 
+// Put request to update a turf
 router.put("/:id", async (req, res) => {
   const turfId = req.params.id;
   const turf = req.body;
@@ -85,6 +84,19 @@ router.put("/:id", async (req, res) => {
   res.send("successfully edited turf");
 });
 
-// Put request to update a turf
+// Delete request to delete a turf
+router.delete("/:id", async (req, res) => {
+  const turfId = req.params.id;
+  try {
+    const deletedTurf = await Turf.findByIdAndDelete(turfId);
+    if (!deletedTurf) {
+      return res.status(404).json({ message: "Turf not found" });
+    }
+    res.json({ message: "Turf deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting turf:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 module.exports = router;

@@ -5,6 +5,8 @@ import apiService from "../services/apiService";
 
 const Turfs = () => {
   const [turfs, setTurfs] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const turfsPerPage = 6;
 
   useEffect(() => {
     const fetchTurfs = async () => {
@@ -17,6 +19,27 @@ const Turfs = () => {
     };
     fetchTurfs();
   }, []);
+
+  const totalPageNumber = Math.ceil(turfs.length / 6);
+  const indexOfLast = currentPage * turfsPerPage;
+  const indexOfFirst = indexOfLast - turfsPerPage;
+  const currentTurfs = turfs.slice(indexOfFirst, indexOfLast);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo(0, 0);
+  };
+
+  const handlePreviousPage = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+    window.scrollTo(0, 0);
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPageNumber));
+    window.scrollTo(0, 0);
+  };
+
   return (
     <div className="turf-container w-10/12 mx-auto flex flex-col items-center">
       <div className="search-container flex flex-row justify-between items-center mx-auto my-4 bg-gray-100 p-4 rounded-2xl shadow-md w-full">
@@ -29,24 +52,44 @@ const Turfs = () => {
           <button className="search-button search-btn">Search</button>
         </div>
         <div className="page-nav flex flex-row">
-          <button className="page-button">&lt;</button>
-          <button className="page-button">1</button>
-          <button className="page-button">2</button>
-          <button className="page-button">3</button>
-          <button className="page-button">&gt;</button>
+          <button className="page-button" onClick={handlePreviousPage}>
+            &lt;
+          </button>
+          {Array.from({ length: totalPageNumber }, (_, index) => (
+            <button
+              key={index}
+              className="page-button"
+              onClick={() => handlePageChange(index + 1)}
+            >
+              {index + 1}
+            </button>
+          ))}
+          <button className="page-button" onClick={handleNextPage}>
+            &gt;
+          </button>
         </div>
       </div>
       <div className="turfs-list w-fullrounded-2xl my-3">
-        {turfs.map((i) => (
+        {currentTurfs.map((i) => (
           <TurfCard key={i._id} turf={i} />
         ))}
       </div>
       <div className="page-nav flex flex-row mt-3 mb-8">
-        <button className="page-button">&lt;</button>
-        <button className="page-button">1</button>
-        <button className="page-button">2</button>
-        <button className="page-button">3</button>
-        <button className="page-button">&gt;</button>
+        <button className="page-button" onClick={handlePreviousPage}>
+          &lt;
+        </button>
+        {Array.from({ length: totalPageNumber }, (_, index) => (
+          <button
+            key={index}
+            className="page-button"
+            onClick={() => handlePageChange(index + 1)}
+          >
+            {index + 1}
+          </button>
+        ))}
+        <button className="page-button" onClick={handleNextPage}>
+          &gt;
+        </button>
       </div>
     </div>
   );

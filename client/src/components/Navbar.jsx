@@ -20,7 +20,7 @@ const Navbar = () => {
     }
   };
   return (
-    <nav className="navbar shadow sticky z-50 top-0">
+    <nav className="navbar sticky top-0 w-full bg-white/30 backdrop-blur-md shadow-md z-50">
       <Link to="/" className="navbar-logo">
         <img src={logo} />
       </Link>

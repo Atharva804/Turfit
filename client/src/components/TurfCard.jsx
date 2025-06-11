@@ -23,10 +23,24 @@ const TurfCard = ({ turf }) => {
         <div className="horizontal-line w-11/12 mt-4"></div>
         <div className="buttons flex flex-row justify-between mt-4 mb-1">
           <Link to={`/book/${turf._id}`}>
-            <button className="book-btn">Book</button>
+            <button
+              className="book-btn"
+              onClick={() => {
+                window.scrollTo(0, 0);
+              }}
+            >
+              Book
+            </button>
           </Link>
           <Link to={`/turf/${turf._id}`}>
-            <button className="details-btn">View Details</button>
+            <button
+              className="details-btn"
+              onClick={() => {
+                window.scrollTo(0, 0);
+              }}
+            >
+              View Details
+            </button>
           </Link>
         </div>
       </div>

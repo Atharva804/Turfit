@@ -221,20 +221,6 @@ export default function UserDashboard() {
                   </div>
                 </div>
               </div>
-
-              <div className="bg-white p-6 rounded-lg shadow-sm border">
-                <div className="flex items-center">
-                  <div className="p-2 bg-purple-100 rounded-lg">
-                    <CreditCard className="w-6 h-6 text-purple-600" />
-                  </div>
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">
-                      Total Spent
-                    </p>
-                    <p className="text-2xl font-bold text-gray-900">₹7,300</p>
-                  </div>
-                </div>
-              </div>
             </div>
 
             {/* Quick Actions */}

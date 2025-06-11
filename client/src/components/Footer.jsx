@@ -17,7 +17,14 @@ const Footer = () => {
           to learn, our turf is your stage.
         </p>
         <Link to="/register">
-          <button className="join-btn mt-10 mb-10">Join Us!</button>
+          <button
+            className="join-btn mt-10 mb-10"
+            onClick={() => {
+              window.scrollTo(0, 0);
+            }}
+          >
+            Join Us!
+          </button>
         </Link>
       </div>
       <div className="horizontal-line w-10/12"></div>

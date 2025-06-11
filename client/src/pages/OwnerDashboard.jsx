@@ -92,18 +92,27 @@ export default function OwnerDashboard() {
   };
 
   const handleEdit = (turfId) => {
-    // console.log("Edit turf:", turfId);
-    // Add edit functionality here
     navigate(`/turf/edit/${turfId}`);
+    window.scrollTo(0, 0);
   };
 
-  const handleDelete = (turfId) => {
-    console.log("Delete turf:", turfId);
-    // Add delete functionality here
+  const handleDelete = async (turfId) => {
+    if (!window.confirm("Are you sure you want to delete this turf?")) {
+      return;
+    }
+    try {
+      const response = await apiService.deleteTurf(turfId);
+      alert("Turf deleted successfully!");
+      // Optionally, you can refresh the turfs list after deletion
+      setTurfs((prevTurfs) => prevTurfs.filter((turf) => turf._id !== turfId));
+    } catch (error) {
+      console.error("Error fetching bookings:", error);
+    }
   };
 
   const handleAddNew = () => {
     navigate("/turf/new");
+    window.scrollTo(0, 0);
   };
 
   const renderContent = () => {
