@@ -1,3 +1,4 @@
+
 # 🏟️ Turf Booking Web App
 
 A full-stack MERN (MongoDB, Express.js, React.js, Node.js) web application for users to book sports turfs online and for owners to manage their listings, all with secure authentication.
@@ -49,28 +50,28 @@ client/
 │   ├── services/
 │   ├── utils/
 │   └── App.jsx
-│   └── Layout.jsx```
+│   └── Layout.jsx
+````
 
 ---
 
 ## 🧪 Key Endpoints
 
-| Method | Route                     | Description                    |
-|--------|---------------------------|--------------------------------|
-| POST   | /auth/register            | User registration        |
-| POST   | /auth/register-owner            | Owner registration        |
-| POST   | /auth/login               | Login with email/password      |
-| POST   | /auth/google              | Google OAuth login             |
-| GET    | /auth/me                  | Get current logged-in user     |
-| GET 	 | /turf/           |   Fetch all turfs    |
-| GET	 | /turf/:id           |   Fetch a specific turfs    |
-| GET	 | /turf/owner/:id           |   View turfs by specific owner    |
-| POST   | /turf/              | Owner creates a turf           |
-| POST   | /booking/                 | User books a turf              |
-| GET    | /booking/user/:id       | User's upcoming bookings       |
-| GET    | /booking/:id  | Owner’s upcoming booking info  |
-| GET    | /booking/validate/:id  | Check for available slots  |
-````
+| Method | Route                      | Description                    |
+|--------|----------------------------|--------------------------------|
+| POST   | `/auth/register`           | User registration              |
+| POST   | `/auth/register-owner`     | Owner registration             |
+| POST   | `/auth/login`              | Login with email/password      |
+| POST   | `/auth/google`             | Google OAuth login             |
+| GET    | `/auth/me`                 | Get current logged-in user     |
+| GET    | `/turf/`                   | Fetch all turfs                |
+| GET    | `/turf/:id`                | Fetch a specific turf          |
+| GET    | `/turf/owner/:id`          | View turfs by specific owner   |
+| POST   | `/turf/`                   | Owner creates a turf           |
+| POST   | `/booking/`                | User books a turf              |
+| GET    | `/booking/user/:id`        | User's upcoming bookings       |
+| GET    | `/booking/:id`             | Owner’s upcoming booking info  |
+| GET    | `/booking/validate/:id`    | Check for available slots      |
 
 ## 🎯 Future Enhancements
 
