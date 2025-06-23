@@ -57,6 +57,20 @@ export const bookingService = {
     }
   },
 
+  async getBookingDetails(id) {
+    try {
+      const response = await axios.get(`/booking/user/turf/${id}`, {
+        headers: {
+          "Content-Type": "application/json", // Set the content type to JSON
+          Authorization: "Bearer your_token_here", // Optional: Set Authorization header
+        },
+      });
+      return response.data;
+    } catch (err) {
+      return null;
+    }
+  },
+
   async completeBooking(turfId, ownerId) {
     try {
       const response = await axios.put(

@@ -12,6 +12,8 @@ import {
   Star,
   CreditCard,
   Menu,
+  Plus,
+  Eye,
   X,
   Check,
   AlertCircle,
@@ -21,16 +23,24 @@ import { useNavigate } from "react-router-dom";
 import { bookingService } from "../services/bookingService";
 import back from "../assets/back.jpg";
 import apiService from "../services/apiService";
+import { userService } from "../services/userService";
 
 export default function TurfBooking() {
   const user = useSelector((state) => state.auth.user);
   const [activeTab, setActiveTab] = useState("home");
+  const [bookings, setBookings] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [bookingStep, setBookingStep] = useState("booking"); // booking, confirmation, success
   const { id } = useParams();
   const [sportType, setSportType] = useState([]);
   const [turfData, setTurfData] = useState({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const turfsPerPage = 3;
   const navigate = useNavigate();
+
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
 
   useEffect(() => {
     const fetchTurf = async () => {
@@ -81,8 +91,7 @@ export default function TurfBooking() {
   const [userDetails, setUserDetails] = useState({
     name: user.name,
     email: user.email,
-    phone: "+91 9876543210",
-    emergencyContact: "+91 9876543211",
+    phone: user.phone,
   });
 
   const [errors, setErrors] = useState({});
@@ -228,6 +237,66 @@ export default function TurfBooking() {
     // });
     // setErrors({});
     navigate("/turfs"); // Redirect to turfs page
+  };
+
+  const fetchBookings = async () => {
+    try {
+      const response = await bookingService.getOwnerBookings(user._id, "user");
+      if (response != null) {
+        setBookings(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching bookings:", error);
+    }
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "completed":
+        return "bg-green-100 text-green-800";
+      case "booked":
+        return "bg-blue-100 text-blue-800";
+      case "cancelled":
+        return "bg-red-100 text-red-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  const totalPageNumber = Math.ceil(bookings.length / 3);
+  const indexOfLast = currentPage * turfsPerPage;
+  const indexOfFirst = indexOfLast - turfsPerPage;
+  const currentBookings = bookings.slice(indexOfFirst, indexOfLast);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo(0, 0);
+  };
+
+  const handlePreviousPage = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+    window.scrollTo(0, 0);
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPageNumber));
+    window.scrollTo(0, 0);
+  };
+
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault();
+    const updatedUser = {
+      ...user,
+      name: name || user.name,
+      email: email || user.email,
+      phone: phone || user.phone,
+    };
+
+    setTimeout(async () => {
+      const res = await userService.editUser(user._id, updatedUser);
+      alert("User details edited successfully!");
+      navigate("/dashboard");
+    }, 1000);
   };
 
   const renderBookingForm = () => (
@@ -472,7 +541,7 @@ export default function TurfBooking() {
             )}
           </div>
 
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Emergency Contact
             </label>
@@ -484,7 +553,7 @@ export default function TurfBooking() {
               }
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
             />
-          </div>
+          </div> */}
         </div>
       </div>
 
@@ -589,14 +658,14 @@ export default function TurfBooking() {
               <span className="text-gray-600">Phone:</span>
               <span className="font-medium">{userDetails.phone}</span>
             </div>
-            {userDetails.emergencyContact && (
+            {/* {userDetails.emergencyContact && (
               <div className="flex justify-between">
                 <span className="text-gray-600">Emergency Contact:</span>
                 <span className="font-medium">
                   {userDetails.emergencyContact}
                 </span>
               </div>
-            )}
+            )} */}
           </div>
         </div>
 
@@ -744,11 +813,202 @@ export default function TurfBooking() {
   );
 
   const renderContent = () => {
-    if (activeTab !== "home") {
+    // if (activeTab !== "home") {
+    //   return (
+    //     <div className="text-center py-12">
+    //       <h2 className="text-2xl font-bold text-gray-900 mb-4">Coming Soon</h2>
+    //       <p className="text-gray-600">This feature is under development.</p>
+    //     </div>
+    //   );
+    // }
+    if (activeTab === "bookings") {
+      fetchBookings();
       return (
-        <div className="text-center py-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Coming Soon</h2>
-          <p className="text-gray-600">This feature is under development.</p>
+        <div>
+          <div className="flex items-center justify-between mb-8">
+            <h1 className="text-3xl font-bold text-gray-900">
+              Booking History
+            </h1>
+            <button
+              onClick={handleNewBooking}
+              className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors flex items-center"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Book New Turf
+            </button>
+          </div>
+          <div className="page-nav flex flex-row my-4">
+            <button className="page-button" onClick={handlePreviousPage}>
+              &lt;
+            </button>
+            {Array.from({ length: totalPageNumber }, (_, index) => (
+              <button
+                key={index}
+                className="page-button"
+                onClick={() => handlePageChange(index + 1)}
+              >
+                {index + 1}
+              </button>
+            ))}
+            <button className="page-button" onClick={handleNextPage}>
+              &gt;
+            </button>
+          </div>
+          <div className="space-y-6">
+            {currentBookings.map((booking) => (
+              <div
+                key={booking._id}
+                className="bg-white rounded-lg shadow-sm border p-6"
+              >
+                <div className="flex flex-col md:flex-row">
+                  <img
+                    src={back}
+                    alt={booking.turfName}
+                    className="w-full md:w-48 h-32 rounded-lg object-cover mb-4 md:mb-0 md:mr-6"
+                  />
+                  <div className="flex-1">
+                    <div className="flex items-start justify-between mb-4">
+                      <div>
+                        <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                          {booking.turfName}
+                        </h3>
+                        <div className="flex items-center text-gray-600 mb-2">
+                          <MapPin className="w-4 h-4 mr-1" />
+                          <span>{booking.location}</span>
+                        </div>
+                        <div className="flex items-center text-gray-600 mb-2">
+                          <Clock className="w-4 h-4 mr-1" />
+                          <span>
+                            {booking.date} • {booking.fullTime} •{" "}
+                            {booking.duration} hours
+                          </span>
+                        </div>
+                        <div className="flex items-center">
+                          <span className="text-sm bg-gray-100 text-gray-700 px-2 py-1 rounded mr-2">
+                            {booking.sportType}
+                          </span>
+                          <span className="text-lg font-bold text-green-600">
+                            ₹{booking.price}
+                          </span>
+                        </div>
+                      </div>
+                      <span
+                        className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
+                          booking.status
+                        )}`}
+                      >
+                        {booking.status}
+                      </span>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        onClick={() => handleViewTurf(booking.id)}
+                        className="px-4 py-2 border border-green-500 text-green-600 rounded-md hover:bg-green-50 transition-colors flex items-center"
+                      >
+                        <Eye className="w-4 h-4 mr-1" />
+                        View Details
+                      </button>
+
+                      {booking.status === "Completed" &&
+                        !booking.hasReviewed && (
+                          <button
+                            onClick={() => handleWriteReview(booking.id)}
+                            className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors flex items-center"
+                          >
+                            <Star className="w-4 h-4 mr-1" />
+                            Write Review
+                          </button>
+                        )}
+
+                      {booking.status === "Completed" &&
+                        booking.hasReviewed && (
+                          <div className="flex items-center text-green-600">
+                            <Star className="w-4 h-4 mr-1 fill-current" />
+                            <span className="text-sm">Review submitted</span>
+                          </div>
+                        )}
+
+                      {booking.status === "Upcoming" && (
+                        <button className="px-4 py-2 border border-red-500 text-red-600 rounded-md hover:bg-red-50 transition-colors">
+                          Cancel Booking
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    } else if (activeTab === "account") {
+      return (
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-8">
+            Account Details
+          </h1>
+          <div className="justify-center flex w-full">
+            <div className="bg-white rounded-lg shadow-sm border p-6 w-full">
+              <div className="grid grid-cols-1 gap-6">
+                <form onSubmit={handleUpdateProfile}>
+                  <div>
+                    <label
+                      htmlFor="name"
+                      className="block text-sm font-medium text-gray-700 mb-2"
+                    >
+                      Full Name
+                    </label>
+                    <input
+                      type="text"
+                      id="name"
+                      defaultValue={user.name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="email"
+                      className="block text-sm font-medium text-gray-700 mb-2"
+                    >
+                      Email
+                    </label>
+                    <input
+                      id="email"
+                      type="email"
+                      defaultValue={user.email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="phone"
+                      className="block text-sm font-medium text-gray-700 mb-2"
+                    >
+                      Phone
+                    </label>
+                    <input
+                      id="phone"
+                      type="tel"
+                      defaultValue={user.phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    />
+                  </div>
+                  <div className="mt-6">
+                    <button
+                      type="submit"
+                      className="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors"
+                    >
+                      Save Changes
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
         </div>
       );
     }

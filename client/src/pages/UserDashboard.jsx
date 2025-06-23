@@ -19,6 +19,7 @@ import {
   CreditCard,
 } from "lucide-react";
 import { bookingService } from "../services/bookingService";
+import { userService } from "../services/userService";
 
 export default function UserDashboard() {
   const user = useSelector((state) => state.auth.user);
@@ -26,6 +27,13 @@ export default function UserDashboard() {
   const [activeTab, setActiveTab] = useState("home");
   const [bookings, setBookings] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [totalDuration, setTotalDuration] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const turfsPerPage = 3;
+
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
 
   useEffect(() => {
     const fetchBookings = async () => {
@@ -42,7 +50,11 @@ export default function UserDashboard() {
       }
     };
     fetchBookings();
-  }, [user, activeTab, bookings]);
+  }, []);
+
+  useEffect(() => {
+    calculateTotalDuration();
+  }, [bookings]);
 
   // Sample booking data
   // const bookings = [
@@ -150,14 +162,57 @@ export default function UserDashboard() {
     navigate("/turfs");
   };
 
-  const handleViewTurf = (bookingId) => {
-    console.log("View turf details:", bookingId);
-    // Add navigation logic here
+  const handleViewTurf = (bookingId, turfId) => {
+    navigate(`/book/${bookingId}/details/${turfId}`);
   };
 
   const handleWriteReview = (bookingId) => {
     console.log("Write review for booking:", bookingId);
     // Add review modal or navigation logic here
+  };
+
+  const calculateTotalDuration = () => {
+    bookings.map((booking) => {
+      setTotalDuration((prevDuration) => {
+        return prevDuration + booking.duration;
+      });
+    });
+  };
+
+  const totalPageNumber = Math.ceil(bookings.length / 3);
+  const indexOfLast = currentPage * turfsPerPage;
+  const indexOfFirst = indexOfLast - turfsPerPage;
+  const currentBookings = bookings.slice(indexOfFirst, indexOfLast);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo(0, 0);
+  };
+
+  const handlePreviousPage = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+    window.scrollTo(0, 0);
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPageNumber));
+    window.scrollTo(0, 0);
+  };
+
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault();
+    const updatedUser = {
+      ...user,
+      name: name || user.name,
+      email: email || user.email,
+      phone: phone || user.phone,
+    };
+
+    setTimeout(async () => {
+      const res = await userService.editUser(user._id, updatedUser);
+      alert("User details edited successfully!");
+      navigate("/dashboard");
+    }, 1000);
   };
 
   const renderContent = () => {
@@ -201,7 +256,9 @@ export default function UserDashboard() {
                     <p className="text-sm font-medium text-gray-600">
                       Hours Played
                     </p>
-                    <p className="text-2xl font-bold text-gray-900">8</p>
+                    <p className="text-2xl font-bold text-gray-900">
+                      {totalDuration}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -361,63 +418,65 @@ export default function UserDashboard() {
             <h1 className="text-3xl font-bold text-gray-900 mb-8">
               Account Details
             </h1>
-            <div className="bg-white rounded-lg shadow-sm border p-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Full Name
-                  </label>
-                  <input
-                    type="text"
-                    defaultValue={user.name}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                  />
+            <div className="justify-center flex w-full">
+              <div className="bg-white rounded-lg shadow-sm border p-6 w-full">
+                <div className="grid grid-cols-1 gap-6">
+                  <form onSubmit={handleUpdateProfile}>
+                    <div>
+                      <label
+                        htmlFor="name"
+                        className="block text-sm font-medium text-gray-700 mb-2"
+                      >
+                        Full Name
+                      </label>
+                      <input
+                        type="text"
+                        id="name"
+                        defaultValue={user.name}
+                        onChange={(e) => setName(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="email"
+                        className="block text-sm font-medium text-gray-700 mb-2"
+                      >
+                        Email
+                      </label>
+                      <input
+                        id="email"
+                        type="email"
+                        defaultValue={user.email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="phone"
+                        className="block text-sm font-medium text-gray-700 mb-2"
+                      >
+                        Phone
+                      </label>
+                      <input
+                        id="phone"
+                        type="tel"
+                        defaultValue={user.phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      />
+                    </div>
+                    <div className="mt-6">
+                      <button
+                        type="submit"
+                        className="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors"
+                      >
+                        Save Changes
+                      </button>
+                    </div>
+                  </form>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    defaultValue={user.email}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Phone
-                  </label>
-                  <input
-                    type="tel"
-                    defaultValue="+91 9876543210"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Date of Birth
-                  </label>
-                  <input
-                    type="date"
-                    defaultValue="1995-06-15"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                  />
-                </div>
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Address
-                  </label>
-                  <textarea
-                    rows={3}
-                    defaultValue="123, Green Valley Apartments, Sector 18, Noida, Uttar Pradesh - 201301"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                  ></textarea>
-                </div>
-              </div>
-              <div className="mt-6">
-                <button className="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors">
-                  Save Changes
-                </button>
               </div>
             </div>
           </div>
@@ -438,9 +497,25 @@ export default function UserDashboard() {
                 Book New Turf
               </button>
             </div>
-
+            <div className="page-nav flex flex-row my-4">
+              <button className="page-button" onClick={handlePreviousPage}>
+                &lt;
+              </button>
+              {Array.from({ length: totalPageNumber }, (_, index) => (
+                <button
+                  key={index}
+                  className="page-button"
+                  onClick={() => handlePageChange(index + 1)}
+                >
+                  {index + 1}
+                </button>
+              ))}
+              <button className="page-button" onClick={handleNextPage}>
+                &gt;
+              </button>
+            </div>
             <div className="space-y-6">
-              {bookings.map((booking) => (
+              {currentBookings.map((booking) => (
                 <div
                   key={booking._id}
                   className="bg-white rounded-lg shadow-sm border p-6"
@@ -488,7 +563,9 @@ export default function UserDashboard() {
 
                       <div className="flex flex-wrap gap-2">
                         <button
-                          onClick={() => handleViewTurf(booking.id)}
+                          onClick={() =>
+                            handleViewTurf(booking._id, booking.turfId)
+                          }
                           className="px-4 py-2 border border-green-500 text-green-600 rounded-md hover:bg-green-50 transition-colors flex items-center"
                         >
                           <Eye className="w-4 h-4 mr-1" />

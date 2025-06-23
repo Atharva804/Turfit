@@ -22,6 +22,16 @@ router.get("/user/:id", async (req, res) => {
   }
 });
 
+router.get("/user/turf/:id", async (req, res) => {
+  const id = req.params.id;
+  try {
+    const booking = await Booking.findById(id).exec();
+    res.json({ data: booking });
+  } catch (error) {
+    res.status(500).json({ message: "No Booking found" });
+  }
+});
+
 router.get("/validate/:id", async (req, res) => {
   const turfId = req.params.id;
   const { date, time } = req.query;

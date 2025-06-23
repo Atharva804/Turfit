@@ -25,7 +25,7 @@ app.use(
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use("/home", mainRouter);
+app.use("/", mainRouter);
 app.use("/turf", turfRouter);
 app.use("/booking", bookingRouter);
 app.use("/auth", authRouter);

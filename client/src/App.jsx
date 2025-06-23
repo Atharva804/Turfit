@@ -17,6 +17,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import RegisterOwner from "./pages/RegisterOwner";
 import AddTurf from "./pages/AddTurf";
 import EditTurf from "./pages/EditTurf";
+import BookingDetials from "./pages/BookingDetials";
 
 function App() {
   const dispatch = useDispatch();
@@ -80,6 +81,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["user"]}>
                 <TurfBooking />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/book/:bookingId/details/:turfId"
+            element={
+              <ProtectedRoute allowedRoles={["user"]}>
+                <BookingDetials />
               </ProtectedRoute>
             }
           />

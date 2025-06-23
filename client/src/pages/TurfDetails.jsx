@@ -9,6 +9,7 @@ import {
   Shield,
 } from "lucide-react";
 import { useParams } from "react-router-dom";
+import turfImage from "../assets/turf.png";
 import apiService from "../services/apiService";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -111,7 +112,7 @@ export default function TurfDetails() {
           <div className="space-y-4">
             <div className="aspect-video rounded-lg overflow-hidden">
               <img
-                src={"../assets/" + turfImages[0] || "/placeholder.svg"}
+                src={turfImage}
                 alt="Main turf view"
                 className="w-full h-full object-cover"
               />
@@ -123,7 +124,7 @@ export default function TurfDetails() {
                   className="aspect-video rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
                 >
                   <img
-                    src={image || "/placeholder.svg"}
+                    src={turfImage}
                     alt={`Turf view ${index + 2}`}
                     className="w-full h-full object-cover"
                   />
@@ -142,7 +143,7 @@ export default function TurfDetails() {
                 <MapPin className="w-5 h-5 mr-2" />
                 <span>{turf?.address || "Turf Address"}</span>
               </div>
-              <div className="flex items-center space-x-4 mb-6">
+              {/* <div className="flex items-center space-x-4 mb-6">
                 <div className="flex items-center">
                   {[...Array(5)].map((_, i) => (
                     <Star
@@ -152,7 +153,7 @@ export default function TurfDetails() {
                   ))}
                   <span className="ml-2 text-gray-600">(4.8) 124 reviews</span>
                 </div>
-              </div>
+              </div> */}
             </div>
 
             {/* Pricing */}
@@ -194,7 +195,7 @@ export default function TurfDetails() {
             </div>
 
             {/* Facilities */}
-            <div>
+            {/* <div>
               <h3 className="text-lg font-semibold text-gray-900 mb-3">
                 Facilities
               </h3>
@@ -224,7 +225,7 @@ export default function TurfDetails() {
                   <span>24/7 Open</span>
                 </div>
               </div>
-            </div>
+            </div> */}
 
             {/* Operating Hours */}
             <div>
@@ -246,7 +247,7 @@ export default function TurfDetails() {
         </div>
 
         {/* Reviews Section */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
+        {/* <div className="bg-white rounded-lg shadow-sm p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-gray-900">
               Reviews & Ratings
@@ -346,7 +347,7 @@ export default function TurfDetails() {
               Load More Reviews
             </button>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
