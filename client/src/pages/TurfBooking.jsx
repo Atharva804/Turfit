@@ -803,7 +803,7 @@ export default function TurfBooking() {
           Book Another Turf
         </button>
         <button
-          onClick={() => setActiveTab("bookings")}
+          onClick={() => navigate("/dashboard")}
           className="px-6 py-3 bg-green-500 text-white rounded-md font-medium hover:bg-green-600"
         >
           View My Bookings

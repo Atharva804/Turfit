@@ -49,6 +49,14 @@ const turfSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    totalBookings: {
+      type: Number,
+      default: 0,
+    },
+    totalRevenue: {
+      type: Number,
+      default: 0,
+    },
 
     images: [
       {

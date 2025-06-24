@@ -24,6 +24,7 @@ import {
   BarChart3,
   Settings,
 } from "lucide-react";
+import { useMemo } from "react";
 import { bookingService } from "../services/bookingService";
 
 export default function OwnerDashboard() {
@@ -34,12 +35,42 @@ export default function OwnerDashboard() {
   const [bookings, setBookings] = useState([]);
   const [turfs, setTurfs] = useState([]);
 
+  const stats = useMemo(() => {
+    const uniquebooking = new Map();
+
+    bookings.forEach((booking) => {
+      const turf = booking.turfId;
+      if (turf && turf._id && !uniquebooking.has(turf._id)) {
+        uniquebooking.set(turf._id, {
+          totalBooking: turf.totalBookings || 0,
+          totalRevenue: turf.totalRevenue || 0,
+        });
+      }
+    });
+
+    // Now sum up
+    let totalBooking = 0;
+    let totalRevenue = 0;
+
+    for (const turf of uniquebooking.values()) {
+      totalBooking += turf.totalBooking;
+      totalRevenue += turf.totalRevenue;
+    }
+
+    return { totalBooking, totalRevenue };
+  }, [bookings]);
+
   useEffect(() => {
     if (activeTab === "home") {
       const fetchTurfs = async () => {
         try {
           const response = await apiService.getOwnerTurfs(user._id);
           setTurfs(response.data);
+          const responseBooking = await bookingService.getOwnerBookings(
+            user._id,
+            "owner"
+          );
+          setBookings(responseBooking.data);
         } catch (error) {
           console.error("Error fetching turfs:", error);
         }
@@ -59,7 +90,13 @@ export default function OwnerDashboard() {
       };
       fetchBookings();
     }
-  }, [user, activeTab, bookings]);
+  }, [user, activeTab]);
+
+  if (activeTab == "home" && !turfs) {
+    return <div className="text-center py-10 text-gray-600">Loading...</div>;
+  } else if (activeTab == "bookings" && !bookings) {
+    return <div className="text-center py-10 text-gray-600">Loading...</div>;
+  }
 
   const navigationItems = [
     { id: "home", label: "Home", icon: Home },
@@ -156,12 +193,14 @@ export default function OwnerDashboard() {
                     <p className="text-sm font-medium text-gray-600">
                       Total Bookings
                     </p>
-                    <p className="text-2xl font-bold text-gray-900">172</p>
+                    <p className="text-2xl font-bold text-gray-900">
+                      {stats.totalBooking}
+                    </p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-lg shadow-sm border">
+              {/* <div className="bg-white p-6 rounded-lg shadow-sm border">
                 <div className="flex items-center">
                   <div className="p-2 bg-yellow-100 rounded-lg">
                     <Star className="w-6 h-6 text-yellow-600" />
@@ -173,7 +212,7 @@ export default function OwnerDashboard() {
                     <p className="text-2xl font-bold text-gray-900">4.7</p>
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               <div className="bg-white p-6 rounded-lg shadow-sm border">
                 <div className="flex items-center">
@@ -183,7 +222,7 @@ export default function OwnerDashboard() {
                   <div className="ml-4">
                     <p className="text-sm font-medium text-gray-600">Revenue</p>
                     <p className="text-2xl font-bold text-gray-900">
-                      ₹1,45,600
+                      ₹{stats.totalRevenue}
                     </p>
                   </div>
                 </div>
@@ -228,7 +267,7 @@ export default function OwnerDashboard() {
                     </div>
 
                     <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center">
+                      {/* <div className="flex items-center">
                         <Star className="w-4 h-4 fill-yellow-400 text-yellow-400 mr-1" />
                         <span className="text-sm font-medium">
                           {turf.rating}
@@ -236,7 +275,7 @@ export default function OwnerDashboard() {
                         <span className="text-sm text-gray-500 ml-1">
                           ({turf.reviews})
                         </span>
-                      </div>
+                      </div> */}
                       <span className="text-lg font-bold text-green-600">
                         ₹{turf.price}/hour
                       </span>

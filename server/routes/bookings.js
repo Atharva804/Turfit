@@ -1,11 +1,17 @@
 const express = require("express");
 const Booking = require("../models/Booking");
+const Turf = require("../models/Turf");
 const router = express.Router();
 
 router.get("/:id", async (req, res) => {
   const id = req.params.id;
   try {
-    const bookings = await Booking.find({ ownerId: id }).exec();
+    const bookings = await Booking.find({ ownerId: id })
+      .populate({
+        path: "turfId",
+        select: "totalBookings totalRevenue", // only include what you need
+      })
+      .exec();
     res.json({ data: bookings });
   } catch (error) {
     res.status(500).json({ message: "No turf found" });
@@ -72,6 +78,13 @@ router.post("/", async (req, res) => {
     sportType: req.body.sport,
     status: req.body.status || "booked",
     paymentStatus: req.body.paymentStatus || "paid",
+  });
+
+  const turfId = req.body.turfId;
+  const totalPrice = req.body.totalPrice;
+
+  await Turf.findByIdAndUpdate(turfId, {
+    $inc: { totalBookings: 1, totalRevenue: totalPrice },
   });
 
   await newBooking
