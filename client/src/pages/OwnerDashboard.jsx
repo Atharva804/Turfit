@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import back from "../assets/back.jpg";
 import apiService from "../services/apiService";
+import { userService } from "../services/userService";
 
 ("use client");
 
@@ -34,6 +35,12 @@ export default function OwnerDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [bookings, setBookings] = useState([]);
   const [turfs, setTurfs] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const turfsPerPage = 3;
+
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
 
   const stats = useMemo(() => {
     const uniquebooking = new Map();
@@ -101,7 +108,7 @@ export default function OwnerDashboard() {
   const navigationItems = [
     { id: "home", label: "Home", icon: Home },
     { id: "account", label: "Account Details", icon: User },
-    { id: "revenue", label: "View Revenue", icon: DollarSign },
+    // { id: "revenue", label: "View Revenue", icon: DollarSign },
     { id: "bookings", label: "View Bookings", icon: BarChart3 },
     { id: "settings", label: "Settings", icon: Settings },
   ];
@@ -150,6 +157,42 @@ export default function OwnerDashboard() {
   const handleAddNew = () => {
     navigate("/turf/new");
     window.scrollTo(0, 0);
+  };
+
+  const totalPageNumber = Math.ceil(bookings.length / 3);
+  const indexOfLast = currentPage * turfsPerPage;
+  const indexOfFirst = indexOfLast - turfsPerPage;
+  const currentBookings = bookings.slice(indexOfFirst, indexOfLast);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo(0, 0);
+  };
+
+  const handlePreviousPage = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+    window.scrollTo(0, 0);
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPageNumber));
+    window.scrollTo(0, 0);
+  };
+
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault();
+    const updatedUser = {
+      ...user,
+      name: name || user.name,
+      email: email || user.email,
+      phone: phone || user.phone,
+    };
+
+    setTimeout(async () => {
+      const res = await userService.editUser(user._id, updatedUser);
+      alert("User details edited successfully!");
+      navigate("/owner-dashboard");
+    }, 1000);
   };
 
   const renderContent = () => {
@@ -338,59 +381,71 @@ export default function OwnerDashboard() {
             <h1 className="text-3xl font-bold text-gray-900 mb-8">
               Account Details
             </h1>
-            <div className="bg-white rounded-lg shadow-sm border p-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Full Name
-                  </label>
-                  <input
-                    type="text"
-                    defaultValue="Rajesh Kumar"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                  />
+            <div className="justify-center flex w-full">
+              <div className="bg-white rounded-lg shadow-sm border p-6 w-full">
+                <div className="grid grid-cols-1 gap-6">
+                  <form onSubmit={handleUpdateProfile}>
+                    <div>
+                      <label
+                        htmlFor="name"
+                        className="block text-sm font-medium text-gray-700 mb-2"
+                      >
+                        Full Name
+                      </label>
+                      <input
+                        type="text"
+                        id="name"
+                        defaultValue={user.name}
+                        onChange={(e) => setName(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="email"
+                        className="block text-sm font-medium text-gray-700 mb-2"
+                      >
+                        Email
+                      </label>
+                      <input
+                        id="email"
+                        type="email"
+                        defaultValue={user.email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="phone"
+                        className="block text-sm font-medium text-gray-700 mb-2"
+                      >
+                        Phone
+                      </label>
+                      <input
+                        id="phone"
+                        type="tel"
+                        defaultValue={user.phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      />
+                    </div>
+                    <div className="mt-6">
+                      <button
+                        type="submit"
+                        className="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors"
+                      >
+                        Save Changes
+                      </button>
+                    </div>
+                  </form>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    defaultValue="rajesh@example.com"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Phone
-                  </label>
-                  <input
-                    type="tel"
-                    defaultValue="+91 9876543210"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Business Name
-                  </label>
-                  <input
-                    type="text"
-                    defaultValue="RR Sports Management"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                  />
-                </div>
-              </div>
-              <div className="mt-6">
-                <button className="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors">
-                  Save Changes
-                </button>
               </div>
             </div>
           </div>
         );
 
-      case "revenue":
+        // case "revenue":
         return (
           <div>
             <h1 className="text-3xl font-bold text-gray-900 mb-8">
@@ -473,9 +528,25 @@ export default function OwnerDashboard() {
                 Booking History
               </h1>
             </div>
-
+            <div className="page-nav flex flex-row my-4">
+              <button className="page-button" onClick={handlePreviousPage}>
+                &lt;
+              </button>
+              {Array.from({ length: totalPageNumber }, (_, index) => (
+                <button
+                  key={index}
+                  className="page-button"
+                  onClick={() => handlePageChange(index + 1)}
+                >
+                  {index + 1}
+                </button>
+              ))}
+              <button className="page-button" onClick={handleNextPage}>
+                &gt;
+              </button>
+            </div>
             <div className="space-y-6">
-              {bookings.map((booking) => (
+              {currentBookings.map((booking) => (
                 <div
                   key={booking._id}
                   className="bg-white rounded-lg shadow-sm border p-6"
@@ -593,7 +664,7 @@ export default function OwnerDashboard() {
                 <span className="text-white font-bold text-lg">T</span>
               </div>
               <span className="ml-2 text-xl font-bold text-gray-900">
-                TurfBook
+                Turfit
               </span>
             </div>
 

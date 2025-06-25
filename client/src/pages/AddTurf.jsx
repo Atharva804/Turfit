@@ -248,7 +248,7 @@ export default function AddTurf() {
                 <span className="text-white font-bold text-lg">T</span>
               </div>
               <span className="ml-2 text-xl font-bold text-gray-900">
-                TurfBook
+                Turfit
               </span>
             </div>
             <div className="flex items-center space-x-4">

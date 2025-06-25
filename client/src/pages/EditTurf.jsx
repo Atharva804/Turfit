@@ -11,17 +11,7 @@ export default function EditTurf() {
 
   const user = useSelector((state) => state.auth.user);
   const navigate = useNavigate();
-  const [turf, setTurf] = useState({
-    name: "",
-    address: "",
-    description: "",
-    city: "",
-    sportType: [],
-    price: "",
-    slots: [],
-    images: [],
-    owner: user._id,
-  });
+  const [turf, setTurf] = useState();
 
   const [imagePreview, setImagePreview] = useState([]);
   const [errors, setErrors] = useState({});
@@ -62,6 +52,10 @@ export default function EditTurf() {
     };
     fetchTurf();
   }, [id]);
+
+  if (!turf) {
+    return <div>Loading...</div>;
+  }
 
   const handleCancel = () => {
     navigate("/owner-dashboard");
@@ -132,6 +126,13 @@ export default function EditTurf() {
     });
   };
 
+  const handleAvailibility = () => {
+    setTurf({
+      ...turf,
+      isAvailable: !turf.isAvailable,
+    });
+  };
+
   // const handleImageChange = (e) => {
   //   const files = Array.from(e.target.files);
   //   if (files.length > 0) {
@@ -181,7 +182,9 @@ export default function EditTurf() {
     if (!turf.city.trim()) newErrors.city = "City is required";
     if (turf.sportType.length === 0)
       newErrors.sportTypes = "Select at least one sport";
-    if (!turf.price.trim()) newErrors.price = "Price is required";
+    if (!turf.price && turf.price !== 0) {
+      newErrors.price = "Price is required";
+    }
     // if (turf.images.length === 0)
     //   newErrors.images = "Upload at least one image";
     if (!turf.description.trim())
@@ -223,7 +226,7 @@ export default function EditTurf() {
                 <span className="text-white font-bold text-lg">T</span>
               </div>
               <span className="ml-2 text-xl font-bold text-gray-900">
-                TurfBook
+                Turfit
               </span>
             </div>
             <div className="flex items-center space-x-4">
@@ -585,6 +588,24 @@ export default function EditTurf() {
                 </div>
               ))}
             </div>
+            <div className="border-b last:border-0 my-1"></div>
+            <div className="flex items-center mt-8">
+              <input
+                type="checkbox"
+                id="isAvailable"
+                checked={turf.isAvailable}
+                onChange={() => {
+                  handleAvailibility();
+                }}
+                className="w-4 h-4 text-green-600 rounded focus:ring-green-500"
+              />
+              <label
+                htmlFor="isAvailable"
+                className="ml-2 text-gray-700 font-bold"
+              >
+                Is Available For Bookings?
+              </label>
+            </div>
           </div>
 
           {/* Submit Button */}
@@ -603,7 +624,7 @@ export default function EditTurf() {
                 isSubmitting ? "opacity-70 cursor-not-allowed" : ""
               }`}
             >
-              {isSubmitting ? "Adding Turf..." : "Add Turf"}
+              {isSubmitting ? "Editing Turf..." : "Edit Turf"}
             </button>
           </div>
         </form>

@@ -263,7 +263,7 @@ export default function UserDashboard() {
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-lg shadow-sm border">
+              {/* <div className="bg-white p-6 rounded-lg shadow-sm border">
                 <div className="flex items-center">
                   <div className="p-2 bg-yellow-100 rounded-lg">
                     <Star className="w-6 h-6 text-yellow-600" />
@@ -277,7 +277,7 @@ export default function UserDashboard() {
                     </p>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
 
             {/* Quick Actions */}
@@ -722,7 +722,7 @@ export default function UserDashboard() {
                 <span className="text-white font-bold text-lg">T</span>
               </div>
               <span className="ml-2 text-xl font-bold text-gray-900">
-                TurfBook
+                Turfit
               </span>
             </div>
 

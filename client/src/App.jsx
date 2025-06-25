@@ -7,6 +7,8 @@ import Login from "./pages/Login";
 import RegisterUser from "./pages/RegisterUser";
 import TurfDetails from "./pages/TurfDetails";
 import Dashboard from "./pages/UserDashboard";
+import ContactUs from "./pages/ContactUs";
+import AboutUs from "./pages/Aboutus";
 import OwnerDashboard from "./pages/OwnerDashboard";
 import "./App.css";
 import { useEffect } from "react";
@@ -39,6 +41,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route path="" element={<Home />} />
+          <Route path="/about" element={<AboutUs />} />
+          <Route path="/contact" element={<ContactUs />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<RegisterUser />} />
           <Route path="/register-owner" element={<RegisterOwner />} />

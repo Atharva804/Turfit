@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 
 router.get("/", async (req, res) => {
   try {
-    const turfs = await Turf.find().exec();
+    const turfs = await Turf.find({ isAvailable: true }).exec();
     res.json({ data: turfs });
   } catch (error) {
     res.status(500).json({ message: "No turf found" });

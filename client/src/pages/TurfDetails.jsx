@@ -76,7 +76,7 @@ export default function TurfDetails() {
                 <span className="text-white font-bold text-lg">T</span>
               </div>
               <span className="ml-2 text-xl font-bold text-gray-900">
-                TurfBook
+                Turfit
               </span>
             </div>
             <nav className="hidden md:flex space-x-8">

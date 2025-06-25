@@ -25,7 +25,7 @@ import back from "../assets/back.jpg";
 import apiService from "../services/apiService";
 import { userService } from "../services/userService";
 
-export default function TurfBooking() {
+export default function Turfiting() {
   const user = useSelector((state) => state.auth.user);
   const [activeTab, setActiveTab] = useState("home");
   const [bookings, setBookings] = useState([]);
@@ -1067,7 +1067,7 @@ export default function TurfBooking() {
                 <span className="text-white font-bold text-lg">T</span>
               </div>
               <span className="ml-2 text-xl font-bold text-gray-900">
-                TurfBook
+                Turfit
               </span>
             </div>
 
