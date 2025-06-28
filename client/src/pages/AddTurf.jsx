@@ -68,6 +68,7 @@ export default function AddTurf() {
   const [imagePreview, setImagePreview] = useState([]);
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // const [files, setFiles] = useState([]);
 
   const sportOptions = [
     "Football",
@@ -94,6 +95,10 @@ export default function AddTurf() {
     navigate("/owner-dashboard");
   };
 
+  const handleFileChange = (e) => {
+    setFiles(e.target.files);
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -108,6 +113,23 @@ export default function AddTurf() {
       });
     }
   };
+
+  //  const handleUpload = async () => {
+  //   const fileFormData = new FormData();
+  //   for (let file of files) {
+  //     fileFormData.append("images", file);
+  //   }
+
+  //   try {
+  //     await axios.post(`/turf/upload-images/${turfId}`, fileFormData, {
+  //       headers: { "Content-Type": "multipart/form-data" },
+  //     });
+  //     alert("Uploaded successfully!");
+  //   } catch (err) {
+  //     console.error("Upload error:", err);
+  //     alert("Upload failed");
+  //   }
+  // };
 
   const handleSportTypeChange = (sport) => {
     const updatedSportTypes = [...formData.sportType];
@@ -157,46 +179,46 @@ export default function AddTurf() {
     });
   };
 
-  // const handleImageChange = (e) => {
-  //   const files = Array.from(e.target.files);
-  //   if (files.length > 0) {
-  //     // Limit to 5 images
-  //     const selectedFiles = files.slice(0, 5);
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length > 0) {
+      // Limit to 5 images
+      const selectedFiles = files.slice(0, 5);
 
-  //     // Create preview URLs
-  //     const newPreviews = selectedFiles.map((file) =>
-  //       URL.createObjectURL(file)
-  //     );
-  //     setImagePreview([...imagePreview, ...newPreviews]);
+      // Create preview URLs
+      const newPreviews = selectedFiles.map((file) =>
+        URL.createObjectURL(file)
+      );
+      setImagePreview([...imagePreview, ...newPreviews]);
 
-  //     // Update form data (in a real app, you'd handle file uploads differently)
-  //     setFormData({
-  //       ...formData,
-  //       images: [...formData.images, ...selectedFiles],
-  //     });
+      // Update form data (in a real app, you'd handle file uploads differently)
+      setFormData({
+        ...formData,
+        images: [...formData.images, ...selectedFiles],
+      });
 
-  //     // Clear error when user uploads
-  //     if (errors.images) {
-  //       setErrors({
-  //         ...errors,
-  //         images: "",
-  //       });
-  //     }
-  //   }
-  // };
+      // Clear error when user uploads
+      if (errors.images) {
+        setErrors({
+          ...errors,
+          images: "",
+        });
+      }
+    }
+  };
 
-  // const removeImage = (index) => {
-  //   const updatedPreviews = [...imagePreview];
-  //   updatedPreviews.splice(index, 1);
-  //   setImagePreview(updatedPreviews);
+  const removeImage = (index) => {
+    const updatedPreviews = [...imagePreview];
+    updatedPreviews.splice(index, 1);
+    setImagePreview(updatedPreviews);
 
-  //   const updatedImages = [...formData.images];
-  //   updatedImages.splice(index, 1);
-  //   setFormData({
-  //     ...formData,
-  //     images: updatedImages,
-  //   });
-  // };
+    const updatedImages = [...formData.images];
+    updatedImages.splice(index, 1);
+    setFormData({
+      ...formData,
+      images: updatedImages,
+    });
+  };
 
   const validateForm = () => {
     const newErrors = {};
@@ -215,9 +237,32 @@ export default function AddTurf() {
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+
+  //   const formErrors = validateForm();
+  //   if (Object.keys(formErrors).length > 0) {
+  //     setErrors(formErrors);
+  //     window.scrollTo({ top: 0, behavior: "smooth" });
+  //     return;
+  //   }
+
+  //   setIsSubmitting(true);
+
+  //   // Simulate API call
+  //   setTimeout(async () => {
+  //     const res = await apiService.addTurf(formData);
+  //     setIsSubmitting(false);
+  //     // In a real app, you would redirect or show success message
+  //     alert("Turf added successfully!");
+  //     navigate("/owner-dashboard");
+  //   }, 1500);
+  // };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
+    /* client‑side validation … */
     const formErrors = validateForm();
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
@@ -227,14 +272,31 @@ export default function AddTurf() {
 
     setIsSubmitting(true);
 
-    // Simulate API call
-    setTimeout(async () => {
-      const res = await apiService.addTurf(formData);
-      setIsSubmitting(false);
-      // In a real app, you would redirect or show success message
-      alert("Turf added successfully!");
+    const fd = new FormData();
+
+    // Scalar fields
+    fd.append("name", formData.name);
+    fd.append("address", formData.address);
+    fd.append("description", formData.description);
+    fd.append("city", formData.city);
+    fd.append("price", formData.price);
+    fd.append("owner", user._id); // matches ownerId in schema
+
+    // Arrays must be sent as JSON strings
+    fd.append("sportType", JSON.stringify(formData.sportType)); // e.g. ["football"]
+    fd.append("slots", JSON.stringify(formData.slots)); // array of slot objects
+
+    // Image files
+    formData.images.forEach((file) => fd.append("images", file));
+
+    try {
+      await apiService.addTurf(fd); // POST /turf (multipart/form-data)
+      alert("Turf added!");
       navigate("/owner-dashboard");
-    }, 1500);
+    } catch (err) {
+      console.error(err);
+      alert("Upload failed");
+    }
   };
 
   return (
@@ -480,7 +542,7 @@ export default function AddTurf() {
           </div> */}
 
           {/* Images */}
-          {/* <div className="bg-white rounded-lg shadow-sm border p-6">
+          <div className="bg-white rounded-lg shadow-sm border p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-6">
               Turf Images*
             </h2>
@@ -488,9 +550,9 @@ export default function AddTurf() {
               Upload up to 5 high-quality images of your turf
             </p>
 
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-4"> */}
-          {/* Image previews */}
-          {/* {imagePreview.map((src, index) => (
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-4">
+              {/* Image previews */}
+              {imagePreview.map((src, index) => (
                 <div
                   key={index}
                   className="relative aspect-square rounded-lg overflow-hidden border"
@@ -508,10 +570,10 @@ export default function AddTurf() {
                     <X className="w-4 h-4 text-gray-700" />
                   </button>
                 </div>
-              ))} */}
+              ))}
 
-          {/* Upload button */}
-          {/* {imagePreview.length < 5 && (
+              {/* Upload button */}
+              {imagePreview.length < 5 && (
                 <label className="cursor-pointer aspect-square rounded-lg border-2 border-dashed border-gray-300 flex flex-col items-center justify-center hover:bg-gray-50">
                   <Upload className="w-8 h-8 text-gray-400 mb-2" />
                   <span className="text-sm text-gray-500">Upload Image</span>
@@ -532,7 +594,7 @@ export default function AddTurf() {
               Tip: Upload clear, well-lit images that showcase your turf's
               features. First image will be used as the main image.
             </p>
-          </div> */}
+          </div>
 
           {/* Availability Slots */}
           <div className="bg-white rounded-lg shadow-sm border p-6">

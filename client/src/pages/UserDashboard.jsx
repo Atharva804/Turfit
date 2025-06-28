@@ -31,6 +31,8 @@ export default function UserDashboard() {
   const [currentPage, setCurrentPage] = useState(1);
   const turfsPerPage = 3;
 
+  const apiUrl = import.meta.env.VITE_BACKEND_URL;
+
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -139,7 +141,7 @@ export default function UserDashboard() {
   ];
 
   const navigationItems = [
-    { id: "home", label: "Home", icon: Home },
+    { id: "home", label: "Dashboard", icon: Home },
     { id: "account", label: "Account Details", icon: User },
     { id: "bookings", label: "Booking History", icon: Calendar },
     // { id: "reviews", label: "My Reviews", icon: MessageSquare },
@@ -322,7 +324,11 @@ export default function UserDashboard() {
                     className="flex items-center p-4 border rounded-lg hover:bg-gray-50"
                   >
                     <img
-                      src={back}
+                      src={
+                        booking.turfId?.images?.[0]
+                          ? `${apiUrl}${booking.turfId.images[0]}`
+                          : back
+                      }
                       alt={booking.turfName}
                       className="w-16 h-16 rounded-lg object-cover mr-4"
                     />
@@ -522,7 +528,11 @@ export default function UserDashboard() {
                 >
                   <div className="flex flex-col md:flex-row">
                     <img
-                      src={back}
+                      src={
+                        booking.turfId?.images?.[0]
+                          ? `${apiUrl}${booking.turfId.images[0]}`
+                          : back
+                      }
                       alt={booking.turfName}
                       className="w-full md:w-48 h-32 rounded-lg object-cover mb-4 md:mb-0 md:mr-6"
                     />
@@ -717,14 +727,14 @@ export default function UserDashboard() {
         >
           <div className="flex flex-col h-full">
             {/* Logo */}
-            <div className="flex items-center px-6 py-4 border-b">
+            {/* <div className="flex items-center px-6 py-4 border-b">
               <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
                 <span className="text-white font-bold text-lg">T</span>
               </div>
               <span className="ml-2 text-xl font-bold text-gray-900">
                 Turfit
               </span>
-            </div>
+            </div> */}
 
             {/* Navigation */}
             <nav className="flex-1 px-4 py-6 space-y-2">

@@ -25,6 +25,7 @@ app.use(
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use("/uploads", express.static("uploads")); // public access
 app.use("/", mainRouter);
 app.use("/turf", turfRouter);
 app.use("/booking", bookingRouter);

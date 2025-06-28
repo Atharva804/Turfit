@@ -9,7 +9,7 @@ router.get("/:id", async (req, res) => {
     const bookings = await Booking.find({ ownerId: id })
       .populate({
         path: "turfId",
-        select: "totalBookings totalRevenue", // only include what you need
+        select: "totalBookings totalRevenue images", // only include what you need
       })
       .exec();
     res.json({ data: bookings });
@@ -21,7 +21,12 @@ router.get("/:id", async (req, res) => {
 router.get("/user/:id", async (req, res) => {
   const id = req.params.id;
   try {
-    const bookings = await Booking.find({ userId: id }).exec();
+    const bookings = await Booking.find({ userId: id })
+      .populate({
+        path: "turfId",
+        select: "images", // only include what you need
+      })
+      .exec();
     res.json({ data: bookings });
   } catch (error) {
     res.status(500).json({ message: "No turf found" });

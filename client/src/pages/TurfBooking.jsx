@@ -98,7 +98,7 @@ export default function Turfiting() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const navigationItems = [
-    { id: "home", label: "Home", icon: Home },
+    { id: "home", label: "Dashboard", icon: Home },
     { id: "account", label: "Account Details", icon: User },
     { id: "bookings", label: "Booking History", icon: Calendar },
   ];
@@ -446,7 +446,7 @@ export default function Turfiting() {
           </div>
 
           {/* Special Requests */}
-          <div className="md:col-span-2">
+          {/* <div className="md:col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Special Requests
             </label>
@@ -459,7 +459,7 @@ export default function Turfiting() {
               placeholder="Any special requirements or requests..."
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
             ></textarea>
-          </div>
+          </div> */}
         </div>
 
         {/* Duration and Price Display */}
@@ -1062,14 +1062,14 @@ export default function Turfiting() {
         >
           <div className="flex flex-col h-full">
             {/* Logo */}
-            <div className="flex items-center px-6 py-4 border-b">
+            {/* <div className="flex items-center px-6 py-4 border-b">
               <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
                 <span className="text-white font-bold text-lg">T</span>
               </div>
               <span className="ml-2 text-xl font-bold text-gray-900">
                 Turfit
               </span>
-            </div>
+            </div> */}
 
             {/* Navigation */}
             <nav className="flex-1 px-4 py-6 space-y-2">

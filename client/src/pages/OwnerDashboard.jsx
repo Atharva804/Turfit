@@ -38,6 +38,8 @@ export default function OwnerDashboard() {
   const [currentPage, setCurrentPage] = useState(1);
   const turfsPerPage = 3;
 
+  const apiUrl = import.meta.env.VITE_BACKEND_URL;
+
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -106,7 +108,7 @@ export default function OwnerDashboard() {
   }
 
   const navigationItems = [
-    { id: "home", label: "Home", icon: Home },
+    { id: "home", label: "Dashboard", icon: Home },
     { id: "account", label: "Account Details", icon: User },
     // { id: "revenue", label: "View Revenue", icon: DollarSign },
     { id: "bookings", label: "View Bookings", icon: BarChart3 },
@@ -281,8 +283,7 @@ export default function OwnerDashboard() {
                 >
                   <div className="relative">
                     <img
-                      // src={turf.image || "/placeholder.svg"}
-                      src={back}
+                      src={`${apiUrl}${turf.images[0]}`}
                       alt={turf.name}
                       className="w-full h-48 object-cover"
                     />
@@ -553,7 +554,11 @@ export default function OwnerDashboard() {
                 >
                   <div className="flex flex-col md:flex-row">
                     <img
-                      src={back}
+                      src={
+                        booking.turfId?.images?.[0]
+                          ? `${apiUrl}${booking.turfId.images[0]}`
+                          : back
+                      }
                       alt={booking.turfName}
                       className="w-full md:w-48 h-32 rounded-lg object-cover mb-4 md:mb-0 md:mr-6"
                     />
@@ -659,14 +664,14 @@ export default function OwnerDashboard() {
         >
           <div className="flex flex-col h-full">
             {/* Logo */}
-            <div className="flex items-center px-6 py-4 border-b">
+            {/* <div className="flex items-center px-6 py-4 border-b">
               <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
                 <span className="text-white font-bold text-lg">T</span>
               </div>
               <span className="ml-2 text-xl font-bold text-gray-900">
                 Turfit
               </span>
-            </div>
+            </div> */}
 
             {/* Navigation */}
             <nav className="flex-1 px-4 py-6 space-y-2">

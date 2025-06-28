@@ -9,7 +9,6 @@ import {
   Shield,
 } from "lucide-react";
 import { useParams } from "react-router-dom";
-import turfImage from "../assets/turf.png";
 import apiService from "../services/apiService";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -19,6 +18,7 @@ export default function TurfDetails() {
   const [turfImages, setTurfImages] = useState([]);
   const [sportType, setSportType] = useState([]);
   const { id } = useParams();
+  const apiUrl = import.meta.env.VITE_BACKEND_URL;
 
   const handleBooking = () => {
     navigate(`/book/${id}`);
@@ -112,7 +112,7 @@ export default function TurfDetails() {
           <div className="space-y-4">
             <div className="aspect-video rounded-lg overflow-hidden">
               <img
-                src={turfImage}
+                src={`${apiUrl}${turfImages[0]}`}
                 alt="Main turf view"
                 className="w-full h-full object-cover"
               />
@@ -124,7 +124,7 @@ export default function TurfDetails() {
                   className="aspect-video rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
                 >
                   <img
-                    src={turfImage}
+                    src={`${apiUrl}${image}`}
                     alt={`Turf view ${index + 2}`}
                     className="w-full h-full object-cover"
                   />

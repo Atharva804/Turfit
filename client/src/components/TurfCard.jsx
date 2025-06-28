@@ -1,14 +1,15 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import turfImage from "../assets/turf.png";
 import logo from "../assets/react.svg";
 import "./TurfCard.css";
 
 const TurfCard = ({ turf }) => {
+  const apiUrl = import.meta.env.VITE_BACKEND_URL;
+
   return (
     <div className="turf-card rounded-2xl w-full drop-shadow-lg mb-4">
       <img
-        src={turfImage}
+        src={`${apiUrl}${turf.images[0]}`}
         alt="Turf"
         className="turf-image w-full rounded-t-2xl"
       />
