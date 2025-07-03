@@ -8,7 +8,7 @@ import RegisterUser from "./pages/RegisterUser";
 import TurfDetails from "./pages/TurfDetails";
 import Dashboard from "./pages/UserDashboard";
 import ContactUs from "./pages/ContactUs";
-import AboutUs from "./pages/Aboutus";
+import AboutUs from "./pages/AboutUs";
 import OwnerDashboard from "./pages/OwnerDashboard";
 import "./App.css";
 import { useEffect } from "react";
