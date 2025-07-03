@@ -283,7 +283,9 @@ export default function OwnerDashboard() {
                 >
                   <div className="relative">
                     <img
-                      src={`${apiUrl}${turf.images[0]}`}
+                      src={
+                        turf.images?.[0] ? `${apiUrl}${turf.images[0]}` : back
+                      }
                       alt={turf.name}
                       className="w-full h-48 object-cover"
                     />
@@ -600,11 +602,11 @@ export default function OwnerDashboard() {
                       </div>
 
                       <div className="flex flex-wrap gap-2">
-                        {booking.status === "booked" && (
+                        {/* {booking.status === "booked" && (
                           <button className="px-4 py-2 border border-red-500 text-red-600 rounded-md hover:bg-red-50 transition-colors">
                             Cancel Booking
                           </button>
-                        )}
+                        )} */}
                         {booking.status === "booked" && (
                           <button
                             onClick={() =>

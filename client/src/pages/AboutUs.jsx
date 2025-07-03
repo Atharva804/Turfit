@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Users, Target, Award, Heart, MapPin, CheckCircle } from "lucide-react";
 import profile from "/profile.png";
+import back from "../assets/back.jpg";
 
 export default function AboutUs() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -116,11 +117,11 @@ export default function AboutUs() {
             </div>
             <div className="relative">
               <img
-                src="/images/back.jpg"
+                src={back}
                 alt="Sports team celebrating"
                 className="rounded-lg shadow-lg w-full h-96 object-cover"
               />
-              <div className="absolute inset-0 bg-green-500 bg-opacity-20 rounded-lg"></div>
+              {/* <div className="absolute inset-0 bg-green-500 bg-opacity-20 rounded-lg"></div> */}
             </div>
           </div>
         </div>

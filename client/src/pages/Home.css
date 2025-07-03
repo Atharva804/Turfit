@@ -15,11 +15,14 @@
   font-size: 4rem;
   font-weight: 600;
   letter-spacing: 0.1rem;
-  color: #87ffb2;
+  color: #14ae5c;
+}
+.home-banner-description {
+  color: black;
 }
 .home-banner-button {
   background-color: #14ae5c;
-  color: white;
+  color: black;
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 400;

@@ -30,7 +30,11 @@ const Home = () => {
     <div className="home-container">
       <div className="home-banner w-full">
         <div className="home-banner-back flex flex-col items-center justify-end">
-          <img src={back} className="banner-back" />
+          <img
+            src={back}
+            style={{ transform: "scaleX(-1)" }}
+            className="banner-back"
+          />
           <button
             onClick={scrollToSection}
             className="home-banner-next-btn absolute mb-8"

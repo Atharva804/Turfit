@@ -42,7 +42,7 @@ const apiService = {
   //   }
   // },
 
-  addTurf(formDataFD) {
+  async addTurf(formDataFD) {
     axios.post(`${apiUrl}turf`, formDataFD, {
       headers: { "Content-Type": "multipart/form-data" },
     });
@@ -50,7 +50,10 @@ const apiService = {
 
   async editTurf(id, turf) {
     try {
-      const response = await axios.put(`${apiUrl}turf/${id}`, turf);
+      const response = await axios.put(`${apiUrl}turf/${id}`, turf, {
+        headers: { "Content-Type": "multipart/form-data" },
+        withCredentials: true,
+      });
       return response.data;
     } catch (error) {
       throw new Error("Failed to update turf");

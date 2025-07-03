@@ -226,13 +226,52 @@ router.post("/", upload.array("images", 5), async (req, res) => {
 });
 
 /*──────────────────── Update turf ───────────────────────────*/
-router.put("/:id", async (req, res) => {
-  const updated = await Turf.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-  });
-  updated
-    ? res.json({ msg: "Turf updated", data: updated })
-    : res.status(404).json({ message: "Turf not found" });
+// router.put("/:id", upload.array("images", 5), async (req, res) => {
+//   const imagePaths = (req.files || []).map((f) => f.path);
+//   const sportTypeArr = JSON.parse(req.body.sportType || "[]"); // ["football","cricket"]
+//   const slotsArr = JSON.parse(req.body.slots || "[]");
+
+//   const turf = req.body;
+//   turf.sportType = sportTypeArr;
+//   turf.images = imagePaths;
+//   turf.slots = slotsArr;
+
+//   const updated = await Turf.findByIdAndUpdate(req.params.id, turf, {
+//     new: true,
+//   });
+//   updated
+//     ? res.json({ msg: "Turf updated", data: updated })
+//     : res.status(404).json({ message: "Turf not found" });
+// });
+
+router.put("/:id", upload.array("images", 5), async (req, res) => {
+  try {
+    const newImagePaths = (req.files || []).map((f) => f.path); // new uploads
+    const keptImages = JSON.parse(req.body.existingImages || "[]"); // URLs still kept
+
+    const finalImages = [...keptImages, ...newImagePaths];
+
+    const updated = await Turf.findByIdAndUpdate(
+      req.params.id,
+      {
+        name: req.body.name,
+        address: req.body.address,
+        description: req.body.description,
+        city: req.body.city,
+        price: req.body.price,
+        sportType: JSON.parse(req.body.sportType || "[]"),
+        slots: JSON.parse(req.body.slots || "[]"),
+        images: finalImages, // ← merged array
+      },
+      { new: true }
+    );
+
+    if (!updated) return res.status(404).json({ message: "Turf not found" });
+    res.json({ msg: "Turf updated", data: updated });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: "Update failed", error: err.message });
+  }
 });
 
 /*──────────────────── Delete turf ───────────────────────────*/

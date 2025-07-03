@@ -229,8 +229,8 @@ export default function AddTurf() {
     if (formData.sportType.length === 0)
       newErrors.sportTypes = "Select at least one sport";
     if (!formData.price.trim()) newErrors.price = "Price is required";
-    // if (formData.images.length === 0)
-    //   newErrors.images = "Upload at least one image";
+    if (formData.images.length === 0)
+      newErrors.images = "Upload at least one image";
     if (!formData.description.trim())
       newErrors.description = "Description is required";
 
