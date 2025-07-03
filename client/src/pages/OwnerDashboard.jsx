@@ -38,8 +38,6 @@ export default function OwnerDashboard() {
   const [currentPage, setCurrentPage] = useState(1);
   const turfsPerPage = 3;
 
-  const apiUrl = import.meta.env.VITE_BACKEND_URL;
-
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -284,7 +282,9 @@ export default function OwnerDashboard() {
                   <div className="relative">
                     <img
                       src={
-                        turf.images?.[0] ? `${apiUrl}${turf.images[0]}` : back
+                        turf.images?.[0].startsWith("http")
+                          ? turf.images[0]
+                          : URL.createObjectURL(turf.images[0])
                       }
                       alt={turf.name}
                       className="w-full h-48 object-cover"
@@ -557,9 +557,9 @@ export default function OwnerDashboard() {
                   <div className="flex flex-col md:flex-row">
                     <img
                       src={
-                        booking.turfId?.images?.[0]
-                          ? `${apiUrl}${booking.turfId.images[0]}`
-                          : back
+                        booking.turfId?.images?.[0].startsWith("http")
+                          ? booking.turfId.images[0]
+                          : URL.createObjectURL(booking.turfId.images[0])
                       }
                       alt={booking.turfName}
                       className="w-full md:w-48 h-32 rounded-lg object-cover mb-4 md:mb-0 md:mr-6"

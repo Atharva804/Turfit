@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Users, Target, Award, Heart, MapPin, CheckCircle } from "lucide-react";
 import profile from "/profile.png";
-import back from "../assets/back.jpg";
+import back from "/back.jpg";
 
 export default function AboutUs() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);

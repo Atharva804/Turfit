@@ -135,8 +135,9 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const Turf = require("../models/Turf");
-const upload = require("../utils/upload"); // Multer config
 const router = express.Router();
+const upload = require("../utils/upload"); // multer memory
+const cloudinary = require("../utils/cloudinary");
 
 /*──────────────────── GET all available ────────────────────*/
 router.get("/", async (req, res) => {
@@ -198,8 +199,22 @@ router.get("/:id", async (req, res) => {
 /*──────────────────── Create turf (with images) ─────────────*/
 router.post("/", upload.array("images", 5), async (req, res) => {
   try {
-    /* files → array of paths that match schema.images[String] */
-    const imagePaths = (req.files || []).map((f) => f.path); // ["uploads/turfs/.."]
+    // 1. push every buffer to cloudinary and await URLs
+    const uploadPromises = req.files.map(
+      (file) =>
+        new Promise((resolve, reject) => {
+          const stream = cloudinary.uploader.upload_stream(
+            { folder: "turfs" }, // options
+            (err, result) => {
+              if (err) return reject(err);
+              resolve(result.secure_url); // full https URL
+            }
+          );
+          stream.end(file.buffer); // ⬅️ push buffer
+        })
+    );
+
+    const imageUrls = await Promise.all(uploadPromises);
 
     /* sportType & slots arrive as JSON strings from FormData → parse */
     const sportTypeArr = JSON.parse(req.body.sportType || "[]"); // ["football","cricket"]
@@ -212,7 +227,7 @@ router.post("/", upload.array("images", 5), async (req, res) => {
       city: req.body.city,
       sportType: sportTypeArr, // ← matches schema Array
       price: req.body.price,
-      images: imagePaths, // ← matches [String]
+      images: imageUrls, // ← matches [String]
       ownerId: req.body.owner, // ObjectId of owner
       slots: slotsArr, // ← matches [slotSchema]
       // totalBookings, totalRevenue, isAvailable default themselves
@@ -246,10 +261,25 @@ router.post("/", upload.array("images", 5), async (req, res) => {
 
 router.put("/:id", upload.array("images", 5), async (req, res) => {
   try {
-    const newImagePaths = (req.files || []).map((f) => f.path); // new uploads
+    // const newImagePaths = req.files.map((f) => f.path); // new uploads
+    const uploadPromises = req.files.map(
+      (file) =>
+        new Promise((resolve, reject) => {
+          const stream = cloudinary.uploader.upload_stream(
+            { folder: "turfs" }, // options
+            (err, result) => {
+              if (err) return reject(err);
+              resolve(result.secure_url); // full https URL
+            }
+          );
+          stream.end(file.buffer); // ⬅️ push buffer
+        })
+    );
+
+    const imageUrls = await Promise.all(uploadPromises);
     const keptImages = JSON.parse(req.body.existingImages || "[]"); // URLs still kept
 
-    const finalImages = [...keptImages, ...newImagePaths];
+    const finalImages = [...keptImages, ...imageUrls];
 
     const updated = await Turf.findByIdAndUpdate(
       req.params.id,

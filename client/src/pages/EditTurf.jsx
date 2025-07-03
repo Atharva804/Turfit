@@ -20,8 +20,6 @@ export default function EditTurf() {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const apiUrl = import.meta.env.VITE_BACKEND_URL;
-
   const sportOptions = [
     "Football",
     "Cricket",
@@ -175,17 +173,19 @@ export default function EditTurf() {
   };
 
   const removeImage = (index) => {
-    const isExisting = typeof preview[index] === "string";
-    if (isExisting) {
-      const updated = existingImgs.filter((_, i) => i !== index);
-      setExistingImgs(updated);
+    // 1. Remove the preview slot
+    setPreview((prev) => prev.filter((_, i) => i !== index));
+
+    // 2. Decide whether the item came from existingImgs or newImgs
+    //    preview always mirrors the concatenation: [...existingImgs, ...newImgs]
+    if (index < existingImgs.length) {
+      // It’s an existing Cloudinary image
+      setExistingImgs((prev) => prev.filter((_, i) => i !== index));
     } else {
-      const updated = newImgs.filter(
-        (_, i) => URL.createObjectURL(_.name ? _ : {}) !== preview[index]
-      );
-      setNewImgs(updated);
+      // Subtract existing length to map to newImgs index
+      const newIndex = index - existingImgs.length;
+      setNewImgs((prev) => prev.filter((_, i) => i !== newIndex));
     }
-    setPreview(preview.filter((_, i) => i !== index));
   };
 
   // const removeImage = (index) => {
@@ -269,7 +269,7 @@ export default function EditTurf() {
     fd.append("slots", JSON.stringify(turf.slots)); // array of slot objects
 
     // Image files
-    fd.append("existingImages", JSON.stringify(existingImgs));
+    fd.append("existingImages", JSON.stringify(existingImgs)); // kept URLs
     newImgs.forEach((file) => fd.append("images", file));
 
     try {
@@ -280,6 +280,17 @@ export default function EditTurf() {
       console.error(err);
       alert("Upload failed");
     }
+  };
+
+  const toPreviewUrl = (item) => {
+    // Already a visible URL (http, https, /uploads, blob:)
+    if (typeof item === "string") return item;
+
+    // File selected from <input>
+    if (item instanceof File) return URL.createObjectURL(item);
+
+    // Fallback
+    return "";
   };
 
   return (
@@ -536,15 +547,14 @@ export default function EditTurf() {
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-4">
               {/* Image previews */}
               {preview.map((src, index) => {
-                const isUrl = typeof src === "string";
-                const imageSrc = isUrl ? `${apiUrl}${src}` : src;
+                const imageSrc = toPreviewUrl(src);
                 return (
                   <div
                     key={index}
                     className="relative aspect-square rounded-lg overflow-hidden border"
                   >
                     <img
-                      src={src.startsWith("blob:") ? src : imageSrc}
+                      src={imageSrc}
                       alt={`Turf preview ${index + 1}`}
                       className="w-full h-full object-cover"
                     />

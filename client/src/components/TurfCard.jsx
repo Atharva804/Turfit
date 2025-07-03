@@ -5,18 +5,14 @@ import turfImg from "../assets/turf.png";
 import "./TurfCard.css";
 
 const TurfCard = ({ turf }) => {
-  let imgSrc;
-  const apiUrl = import.meta.env.VITE_BACKEND_URL;
-  if (!turf.images[0]) {
-    imgSrc = turfImg;
-  } else {
-    imgSrc = apiUrl + turf.images[0];
-  }
-
   return (
     <div className="turf-card rounded-2xl w-full drop-shadow-lg mb-4">
       <img
-        src={imgSrc}
+        src={
+          turf.images[0].startsWith("http")
+            ? turf.images[0]
+            : URL.createObjectURL(turf.images[0])
+        }
         alt="Turf"
         className="turf-image w-full rounded-t-2xl"
       />

@@ -34,7 +34,7 @@ function RegisterOwner() {
   return (
     <div className="register-container">
       <img src={backgroundImage} alt="Image" className="background-img" />
-      <div className="form-container">
+      <div className="form-container bg-white/50 backdrop-blur-md shadow-md">
         <h1>Sign Up</h1>
         <form onSubmit={handleRegister} className="register-form">
           <div className="input-box">

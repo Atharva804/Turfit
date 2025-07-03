@@ -36,7 +36,7 @@ function Login() {
   return (
     <div id="page" className="login-container">
       <img src={backgroundImage} alt="Image" className="background-img" />
-      <div className="form-container">
+      <div className="form-container bg-white/50 backdrop-blur-md shadow-md">
         <h1>Login</h1>
         <form onSubmit={handleLogin} className="login-form">
           <div className="input-box">
