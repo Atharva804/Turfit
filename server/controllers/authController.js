@@ -33,7 +33,7 @@ export const register = async (req, res) => {
       .cookie("token", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "Lax", // Or 'None' with https
+        sameSite: "None", // Or 'None' with https
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       })
       .json({
@@ -75,7 +75,7 @@ export const registerOwner = async (req, res) => {
       .cookie("token", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "Lax", // Or 'None' with https
+        sameSite: "None", // Or 'None' with https
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       })
       .json({
@@ -111,7 +111,7 @@ export const login = async (req, res) => {
       .cookie("token", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "Lax", // Or 'None' with https
+        sameSite: "None", // Or 'None' with https
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       })
       .json({
@@ -129,7 +129,7 @@ export const login = async (req, res) => {
 
 // Logout
 export const logout = (req, res) => {
-  res.clearCookie("token", { httpOnly: true, sameSite: "Lax", secure: false });
+  res.clearCookie("token", { httpOnly: true, sameSite: "None", secure: false });
   res.status(200).json({ message: "Logged out" });
 };
 
@@ -187,7 +187,7 @@ export const googleLogin = async (req, res) => {
       .cookie("token", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "Lax",
+        sameSite: "None",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       })
       .json({
