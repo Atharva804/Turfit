@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "../utils/axiosInstance";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../redux/authSlice";
+import { X } from "lucide-react";
 import "./Navbar.css";
 
 const Navbar = () => {
@@ -143,6 +144,7 @@ const Navbar = () => {
             className="mobile-menu-toggle"
             onClick={toggleMobileMenu}
             aria-label="Toggle mobile menu"
+            aria-expanded={isMobileMenuOpen}
           >
             <div className={`hamburger ${isMobileMenuOpen ? "active" : ""}`}>
               <span></span>
@@ -161,7 +163,27 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       <div className={`mobile-menu ${isMobileMenuOpen ? "active" : ""}`}>
-        <ul>
+        {/* Mobile Menu Header with Close Button */}
+        <div className="mobile-menu-header">
+          <Link to="/" className="mobile-logo" onClick={closeMobileMenu}>
+            <div className="flex items-center">
+              <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                <span className="text-white font-bold text-sm">T</span>
+              </div>
+              <span className="ml-2 text-lg font-bold">Turfit</span>
+            </div>
+          </Link>
+          <button
+            className="mobile-close-btn"
+            onClick={closeMobileMenu}
+            aria-label="Close mobile menu"
+          >
+            <X className="w-6 h-6" />
+          </button>
+        </div>
+
+        {/* Mobile Navigation Links */}
+        <ul className="mobile-nav-links">
           <li>
             <Link to="/" className="navbar-link" onClick={closeMobileMenu}>
               Home
@@ -188,39 +210,55 @@ const Navbar = () => {
           </li>
         </ul>
 
-        <div className="navbar-btns">
+        {/* Mobile User Section */}
+        <div className="mobile-user-section">
           {user ? (
             <>
-              {user.role === "owner" ? (
-                <Link
-                  to="/owner-dashboard"
-                  className="signup-btn nav-btn"
-                  onClick={closeMobileMenu}
-                >
-                  Profile
-                </Link>
-              ) : (
-                <Link
-                  to="/dashboard"
-                  className="signup-btn nav-btn"
-                  onClick={closeMobileMenu}
-                >
-                  Profile
-                </Link>
-              )}
-              <button onClick={handleLogout} className="login-btn nav-btn">
-                Logout
-              </button>
+              <div className="mobile-user-info">
+                <div className="user-avatar">
+                  <span className="text-green-600 font-bold text-lg">
+                    {user.name ? user.name.charAt(0).toUpperCase() : "U"}
+                  </span>
+                </div>
+                <div className="user-details">
+                  <p className="user-name">{user.name || "User"}</p>
+                  <p className="user-role">
+                    {user.role === "owner" ? "Turf Owner" : "Player"}
+                  </p>
+                </div>
+              </div>
+              <div className="mobile-user-actions">
+                {user.role === "owner" ? (
+                  <Link
+                    to="/owner-dashboard"
+                    className="mobile-profile-btn"
+                    onClick={closeMobileMenu}
+                  >
+                    View Profile
+                  </Link>
+                ) : (
+                  <Link
+                    to="/dashboard"
+                    className="mobile-profile-btn"
+                    onClick={closeMobileMenu}
+                  >
+                    View Profile
+                  </Link>
+                )}
+                <button onClick={handleLogout} className="mobile-logout-btn">
+                  Logout
+                </button>
+              </div>
             </>
           ) : (
-            <>
+            <div className="mobile-auth-buttons">
               <Link to="/login" onClick={closeMobileMenu}>
-                <button className="login-btn nav-btn">Login</button>
+                <button className="mobile-login-btn">Login</button>
               </Link>
               <Link to="/register" onClick={closeMobileMenu}>
-                <button className="signup-btn nav-btn">Signup</button>
+                <button className="mobile-signup-btn">Sign Up</button>
               </Link>
-            </>
+            </div>
           )}
         </div>
       </div>
